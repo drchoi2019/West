@@ -524,7 +524,7 @@ const CHAPTERS = [
    { side:'L', choice:"현관문 너머가 조용하다.", options:[
      { label:"수갑을 꺼낸다", add:{doubt:2} },
      { label: s => s.flags.hk === 'drawer' ? "그녀에게 다가간다" : "손수건을 내민다", add:{lure:2} },
-     { label:"차로 돌아간다", add:{family:2} }
+     { label:"차로 돌아간다", add:{family:2}, set:{last:'car'} }
    ]},
    { build:'ending' }
   ];
@@ -580,7 +580,25 @@ const store = {
   del(k){ try{ localStorage.removeItem(k); }catch(e){} }
 };
 let view = 'boot';
+/* ---------- 음악 (오프닝·엔딩) ---------- */
+const bgm = new Audio('audio/Midnight_at_the_Villa.mp3');
+bgm.loop = true; bgm.volume = .6;
+let bgmFade = null;
+function playBgm(){
+  clearInterval(bgmFade); bgm.volume = .6;
+  if (bgm.paused) bgm.play().catch(() => {});
+}
+function stopBgm(){
+  clearInterval(bgmFade);
+  if (bgm.paused) return;
+  bgmFade = setInterval(() => {
+    bgm.volume = Math.max(0, bgm.volume - .05);
+    if (bgm.volume <= 0){ clearInterval(bgmFade); bgm.pause(); bgm.currentTime = 0; bgm.volume = .6; }
+  }, 60);
+}
 function show(v){
+  if (v === 'game') stopBgm();
+  else if (v !== 'boot' && v !== 'warn') playBgm();
   document.querySelectorAll('.view').forEach(e => e.classList.toggle('on', e.id === v));
   view = v;
   if (v !== 'game') { const b = document.querySelector('#'+v+' button'); if (b) b.focus(); }
@@ -696,8 +714,11 @@ function buildEnding(){
   /* 엔딩 1(가정)은 붉은 현관 없이 바로 후일담으로 */
   /* 엔딩 2만 붉은 현관, 엔딩 3은 밀회 전용 그림, 엔딩 1은 그림 없이 바로 후일담 */
   let epi = EPI[d](A, f);
+  playBgm();
   if (d === 2) items.push(
-    { side:'F', img:'west', t:"형사는 주원을 만나봐야 마음을 정할 수 있을 것 같았다. 담배를 신발에 비벼끄고 현관문을 다시 두드렸다." },
+    { side:'F', img:'west', t: f.last === 'car'
+      ? "형사는 차 문손잡이를 잡았다가 놓았다. 주원을 만나봐야 마음을 정할 수 있을 것 같았다. 형사는 서향집 현관으로 되돌아가 문을 다시 두드렸다."
+      : "형사는 주원을 만나봐야 마음을 정할 수 있을 것 같았다. 담배를 신발에 비벼끄고 현관문을 다시 두드렸다." },
     { side:'F', img:'west', t:"서쪽을 향한 현관문이 붉게 타오르고 있다." });
   if (d === 3){ items.push(Object.assign({}, epi[0], { side:'F', img:'tryst' })); epi = epi.slice(1); }
   items.push({ unsplit:true, cg: d === 1 ? 'end1' : d === 3 ? 'end3' : null }, ...epi, { ending:'d' + d + (A ? 'a' : 'b') });
