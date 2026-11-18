@@ -121,6 +121,7 @@ button:focus,button:hover{outline:none;background:var(--gy);color:#000;text-shad
 #title .tbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% center}
 #title .tshade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.88) 0%,rgba(0,0,0,.72) 30%,rgba(0,0,0,.15) 55%,transparent 70%)}
 #title .tbox{position:relative;width:46%;padding:3cqw 4.5cqw;display:flex;flex-direction:column;justify-content:center;text-shadow:0 0 .4em #000,0 0 .2em #000}
+#optRows button{display:block;margin:.8cqw 0}
 #title h1{text-shadow:0 0 .25em rgba(255,85,85,.6),0 0 .15em #000}
 .half img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;image-rendering:pixelated;transition:opacity 1.2s,filter 1.2s}
 #hl .sun{object-position:40% center}
@@ -167,8 +168,8 @@ button:focus,button:hover{outline:none;background:var(--gy);color:#000;text-shad
   <div id="boot" class="view"></div>
 
   <div id="warn" class="view">
-    <div class="box">이 이야기에는 가정폭력과<br>총기에 의한 죽음이 묘사되어 있습니다.</div>
-    <div class="blink">[ 아무 키나 누르세요 ]</div>
+    <div class="box" data-i18n="warn">이 이야기에는 가정폭력과<br>총기에 의한 죽음이 묘사되어 있습니다.</div>
+    <div class="blink" data-i18n="anykey">[ 아무 키나 누르세요 ]</div>
   </div>
 
   <div id="title" class="view">
@@ -178,13 +179,14 @@ button:focus,button:hover{outline:none;background:var(--gy);color:#000;text-shad
       <h1>서향집</h1>
       <div class="sub">A WEST-FACING HOUSE</div>
       <div class="menu">
-        <button data-act="new">1. 처음부터</button>
-        <button data-act="cont" id="contBtn">2. 이어하기</button>
-        <button data-act="end">3. 엔딩 목록</button>
-        <button data-act="stl">4. 스틸 미리보기 <span style="opacity:.6">(제작용)</span></button>
-        <button data-act="chsel">5. 장 선택 <span style="opacity:.6">(제작용)</span></button>
+        <button data-act="new" data-i18n="m1">1. 처음부터</button>
+        <button data-act="cont" id="contBtn" data-i18n="m2">2. 이어하기</button>
+        <button data-act="end" data-i18n="m3">3. 엔딩 목록</button>
+        <button data-act="opt" data-i18n="m4">4. 옵션 / Options</button>
+        <button data-act="stl" data-i18n="m5">5. 스틸 미리보기 <span style="opacity:.6">(제작용)</span></button>
+        <button data-act="chsel" data-i18n="m6">6. 장 선택 <span style="opacity:.6">(제작용)</span></button>
       </div>
-      <div class="foot">v0.8 · 전체 11장 · 엔딩 3종</div>
+      <div class="foot" data-i18n="foot">v0.8 · 전체 11장 · 엔딩 3종</div>
     </div>
   </div>
 
@@ -195,54 +197,60 @@ button:focus,button:hover{outline:none;background:var(--gy);color:#000;text-shad
         <div class="half" id="hl">
           <img class="bg sun" id="imgSun" alt="">
           <div class="redov"></div>
-          <div class="stag">해 질 녘</div>
+          <div class="stag" data-i18n="sunset">해 질 녘</div>
           <div class="stxt"><div id="lt"></div><div class="sch" id="lch"></div></div>
         </div>
         <div class="half" id="hr">
           <img class="bg night" id="imgNight" alt="">
           <img class="bg cx" id="imgClimax" alt="">
-          <div class="stag">자정</div>
+          <div class="stag" data-i18n="midnight">자정</div>
           <div class="stxt"><div id="rt"></div></div>
         </div>
         <div id="fin"><img class="bg" id="imgFin" alt=""><div class="ph" id="finph"></div><div class="redov"></div><div class="stxt"><div id="ft"></div></div></div>
       </div>
       <span id="more" class="blink">▼</span></div>
-    <div class="bar"><span>SPACE·클릭 다음 &nbsp; F 수치 &nbsp; R 검수 &nbsp; Q 타이틀</span><span id="rv"></span></div>
+    <div class="bar"><span data-i18n="keys">SPACE·클릭 다음 &nbsp; F 수치 &nbsp; R 검수 &nbsp; Q 타이틀</span><span id="rv"></span></div>
     <div id="stillov" class="overlay"><div class="still" id="stillovSlot"></div></div>
     <div id="card" class="overlay"><div id="cardnum"></div><div class="cardsub">· · ·</div></div>
     <div id="flags" class="panel"></div>
-    <div id="quit" class="panel">타이틀로 돌아갈까요?<br><small>진행은 이 장의 처음으로 저장돼요.</small>
-      <div><button data-q="y">Y 예</button><button data-q="n">N 아니오</button></div></div>
+    <div id="quit" class="panel"><span data-i18n="quit">타이틀로 돌아갈까요?<br><small>진행은 이 장의 처음으로 저장돼요.</small></span>
+      <div><button data-q="y" data-i18n="yes">Y 예</button><button data-q="n" data-i18n="no">N 아니오</button></div></div>
   </div>
 
   <div id="proto" class="view list">
     <h2 id="protoHead">— 2장 끝 —</h2>
     <div id="protoSub"></div>
     <div class="rows" id="protoFlags"></div>
-    <div><button data-act="new">1. 처음부터 다시</button><button data-act="title">2. 타이틀로</button></div>
+    <div><button data-act="new" data-i18n="again">1. 처음부터 다시</button><button data-act="title" data-i18n="totitle">2. 타이틀로</button></div>
   </div>
 
   <div id="chsel" class="view list">
-    <h2>장 선택 (제작용)</h2>
-    <div class="note" style="color:var(--dg);font-size:1.5cqw;margin-bottom:1cqw">수치는 0에서 시작하고 저장되지 않아요.</div>
+    <h2 data-i18n="chselH">장 선택 (제작용)</h2>
+    <div class="note" style="color:var(--dg);font-size:1.5cqw;margin-bottom:1cqw" data-i18n="chselN">수치는 0에서 시작하고 저장되지 않아요.</div>
     <div class="rows" id="chRows" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.2cqw 2cqw"></div>
-    <button class="back" data-act="title">◀ 돌아가기</button>
+    <button class="back" data-act="title" data-i18n="back">◀ 돌아가기</button>
   </div>
 
   <div id="endings" class="view list">
-    <h2>엔딩 목록</h2>
+    <h2 data-i18n="endH">엔딩 목록</h2>
     <div class="rows" id="endRows"></div>
-    <button class="back" data-act="title">◀ 돌아가기</button>
+    <button class="back" data-act="title" data-i18n="back">◀ 돌아가기</button>
+  </div>
+
+  <div id="opts" class="view list">
+    <h2 data-i18n="optH">옵션</h2>
+    <div class="rows" id="optRows"></div>
+    <button class="back" data-act="title" data-i18n="back">◀ 돌아가기</button>
   </div>
 
   <div id="stills" class="view list">
-    <h2>스틸 미리보기</h2>
-    <div class="note">칸을 눌러 이미지를 고르면 레트로 픽셀 효과를 입혀 미리 보여드려요. (이 화면에서만 보이고 저장되지 않아요)</div>
+    <h2 data-i18n="stlH">스틸 미리보기</h2>
+    <div class="note" data-i18n="stlN">칸을 눌러 이미지를 고르면 레트로 픽셀 효과를 입혀 미리 보여드려요. (이 화면에서만 보이고 저장되지 않아요)</div>
     <div class="slots">
-      <div class="slot"><div class="still" id="slotCover" data-slot="cover"></div><div>STILL 01 · 커버 — 주원</div></div>
-      <div class="slot"><div class="still" id="slotWest" data-slot="west"></div><div>STILL 02 · 서향집과 담배</div></div>
+      <div class="slot"><div class="still" id="slotCover" data-slot="cover"></div><div data-i18n="stl1">STILL 01 · 커버 — 주원</div></div>
+      <div class="slot"><div class="still" id="slotWest" data-slot="west"></div><div data-i18n="stl2">STILL 02 · 서향집과 담배</div></div>
     </div>
-    <button class="back" data-act="title">◀ 돌아가기</button>
+    <button class="back" data-act="title" data-i18n="back">◀ 돌아가기</button>
     <input type="file" id="file" accept="image/*" hidden>
   </div>
 </div>
@@ -572,6 +580,270 @@ const EPI = {
 const POV_COLOR = { det:'#55ffff', man:'#e09a3a', both:'#ff5555' };
 const HK_NAME = { coat:'외투 주머니', bag:'증거품 봉투', drawer:'서랍' };
 
+/* =========================================================
+   언어·옵션
+   - EN: 한국어 원문 → 영어 (원문 문장을 그대로 키로 씀)
+   - UI: 화면 고정 문구 (data-i18n)
+   ========================================================= */
+const OPT = Object.assign({ lang: /^ko/i.test(navigator.language || '') ? 'ko' : 'en', speed:'normal', music:true, sfx:true },
+  (() => { try { return JSON.parse(localStorage.getItem('seohyang_opts')) || {}; } catch(e){ return {}; } })());
+const saveOpt = () => { try { localStorage.setItem('seohyang_opts', JSON.stringify(OPT)); } catch(e){} };
+const T = k => (OPT.lang === 'en' && EN[k] != null) ? EN[k] : k;
+const U = (ko, en) => OPT.lang === 'en' ? en : ko;
+const SPEED = { slow:2, normal:1, fast:.5, instant:0 };
+const typeMs = () => SPEED[OPT.speed] ? (OPT.lang === 'en' ? 14 : 30) * SPEED[OPT.speed] : 0;
+const EN = {
+"서류를 작성하던 손에서 익숙하지 않은 냄새가 났다. 냄새를 좇아 기억을 더듬었다. 그 집, 아니 그녀의 냄새였다.": "There was an unfamiliar smell on the hand I was writing my report with. I followed it back through memory. That house. No — her. It was her smell.",
+"현장에서 엽총을 살피다 손에 화약이 묻었고, 닦을 휴지를 찾는 내게 그녀가 손수건을 내밀었다. 연락을 받고 서울에서 내려온 그녀는 그때 현관 옆에 비켜서 있었다.": "At the scene I'd been examining the shotgun and got powder residue on my hand. While I was looking for a tissue, she held out a handkerchief. She had driven down from Seoul after the call, and she was standing off to one side of the front door.",
+"일어나 외투 주머니를 확인했다. 그제야 그 손수건을 돌려주지 않고 외투 주머니에 넣어 왔다는 사실을 깨달았다. 손수건을 꺼내 책상 서랍에 넣었다.": "I got up and checked my coat pocket. Only then did I realize I'd never given the handkerchief back — I had carried it off in my pocket. I took it out and put it in my desk drawer.",
+"손끝에 아직 냄새가 남아 있다.": "The smell still lingers on my fingertips.",
+"손끝을 코에 가져간다": "Raise my fingers to my nose",
+"손끝을 코에 가져갔다. 화약 냄새 아래로 다른 냄새가 깔려 있었다. 나쁜 짓을 하다 들킨 사람처럼 주위를 둘러보았다. 아무도 보고 있지 않았다. 그게 더 나빴다.": "I raised my fingers to my nose. Beneath the gunpowder lay another scent. I glanced around like someone caught doing something wrong. No one was watching. That was worse.",
+"뒤늦게 책상 위의 손 소독제를 짜서 손에 문질렀다.": "Belatedly, I pumped some hand sanitizer from the bottle on my desk and rubbed it in.",
+"손 소독제를 짠다": "Use the hand sanitizer",
+"손끝을 코에 가져가려다 나쁜 짓을 하려다 들킨 것 처럼 손을 내렸다. 대신 책상 위의 손 소독제를 짜서 손에 문질렀다.": "I started to raise my fingers to my nose, then dropped my hand as if I'd been caught. Instead I pumped some hand sanitizer from the bottle on my desk and rubbed it in.",
+"우리나라에서도 총기 사고는 생각보다 많이 일어난다. 하지만 사망 사고는 드물다. 결혼을 앞둔 30대 남자가 자신의 별장에서 수렵용 엽총에 맞아 숨졌다.": "People assume gun accidents don't happen in Korea, where almost no one owns a gun. They happen more often than you'd think. Deaths are rare, though. A man in his thirties, about to be married, was killed by a hunting shotgun at his own country house.",
+"남자의 주머니에서 결혼반지가 발견되었다. 어쩌면 프러포즈를 앞두고 사망했을지도 몰랐다.": "An engagement ring was found in his pocket. He may have died just before proposing.",
+"엽총은 사망자 명의로 등록된 두 정 중 하나였다. 사냥 시즌 두 달 동안만 별장에 두는 총이었다. 걸이는 벽난로 위, 내 팔로도 닿지 않는 높이에 있었다.": "The shotgun was one of two registered in the dead man's name. Here, hunting guns are kept locked up at the police station; he was allowed to keep them at the house only for the two months of hunting season. The rack hung above the fireplace, higher than even my arm could reach.",
+"처음엔 그의 약혼녀를 유력한 용의자로 의심했다. 정주원.": "At first his fiancée was our prime suspect. Jeong Ju-won.",
+"그러나 약혼녀는 미망인이 아니다. 남자가 죽어도 그녀에게 돌아갈 재산은 없었다. 게다가 그녀에게는 사건 당시 서울에 있었다는 강력한 알리바이가 있었다.": "But a fiancée is not a widow. His death left her nothing. And she had a solid alibi: at the time, she was in Seoul.",
+"정주원의 주변 인물들을 조사해 봐야겠다고 생각했다. 책상에서 일어섰다. 책상 밑의 구두 대신 운동화를 신었다.": "I decided to look into the people around Jeong Ju-won. I got up from my desk and put on sneakers instead of the dress shoes under it.",
+"삼 년을 사귀었지만 주원이의 마음을 알기 어렵다. 이걸 슬픔이라고 해야 할지 절망이라고 해야 할지, 이름 붙이기 어려웠다. 이럴 때면 나는 무력감을 느낀다.": "Three years together, and I still can't read Juwon. I don't know whether to call it sorrow or despair; it's hard to give it a name. Times like this, I feel helpless.",
+"그녀는 아름다운 난수와 같다. 예측할 수 없어서 아름답고, 예측할 수 없어서 아프다.": "She is like a beautiful random number. Beautiful because she can't be predicted. Painful for the same reason.",
+"그 난수는 수시로 바뀐다. 지금 나온 난수는 음의 수다. 그녀는 몹시 침울하다. 무슨 일이 있었던 게 틀림없다.": "The number keeps changing. Today it came up negative. She's deeply gloomy. Something must have happened.",
+"그녀의 전화가 울렸다. 내 시선이 전화에 닿기도 전에 그녀는 전화를 뒤집어 놓았다. 벨 소리는 멎었지만 책상 위의 진동은 멈추지 않았다.": "Her phone rang. Before my eyes could even reach it, she flipped it face-down. The ringing stopped, but the buzzing against the desk went on.",
+"그녀 주위에는 늘 남자가 많다. 직업 때문에 어쩔 수 없다고 하지만 나는 신경이 쓰인다.": "There are always men around her. She says it comes with her job, but it gets to me.",
+"주원이는 내가 자기 전화기를 보는 것을, 멀리서 흘끗 보는 것조차 용납하지 않는다. 그녀가 다른 남자들과 어울리는 것이 어쩔 수 없다는 건 나도 안다.": "Juwon won't let me look at her phone — not even a glance from across the room. I know she can't help spending time with other men.",
+"처음에는 그냥 그렇게 넘겼다. 그녀가 나와 함께한다는 것만으로도 행복했으니까. 그러나, 점점 주원의 행동을 참을 수 없었다.": "At first I let it go. Just being with her was enough to make me happy. But little by little, I couldn't stand the way she acted.",
+"처음은 작년 봄이었다. 회식에서 돌아온 그녀의 전화에 모르는 이름이 떴다. 누구냐고 물었고, 그녀는 대답 대신 전화를 뒤집었다.": "The first time was last spring. She came home from a work dinner, and a name I didn't know lit up her phone. I asked who it was. Instead of answering, she flipped the phone over.",
+"생각보다 소리가 먼저 났다. 내 손바닥이 그녀의 뺨에 닿는 소리였다.": "The sound came before the thought. The sound of my palm meeting her cheek.",
+"그녀는 뺨을 감싸고 나를 보았다. 놀란 얼굴이 아니었다. 무언가를 확인한 얼굴이었다.": "She held her cheek and looked at me. It wasn't a look of surprise. It was the look of someone confirming something.",
+"두 번째는 여름, 내가 던진 휴대전화에 눈썹 위가 찢어진 날, 그녀는 분장실 사람들에게 찬장 문에 부딪혔다고 했다.": "The second time was in summer, the day the phone I threw split the skin above her eyebrow. She told the people in the makeup room she'd walked into a cupboard door.",
+"세 번째부터는 세지 않았다. 그녀는 거짓말이 늘었고 나는 사과가 늘었다.": "After the third time, I stopped counting. Her lies multiplied. So did my apologies.",
+"그녀는 점점 소리를 내지 않았다. 맞는 동안에도 나를 보고만 있었다.": "She made less and less sound. Even while I hit her, she just watched me.",
+"그런 일이 있을 때마다 나는 주원에게 구하기 힘든 명품을 선물하고는 했다. 나에게 돈으로 해결할 수 있는 일이라면 어려운 것이 아니다.": "Every time it happened, I bought Juwon some luxury piece that was hard to get. If money can fix something, it isn't hard for me.",
+"다만, 그것이 해결이었는지에 대한 확신은 없었다.": "I was never sure, though, that it fixed anything.",
+"사망자가 총을 맞은 각도는 가슴에서 아래쪽을 향해 있었다. 어깨에 견착하고 쐈다면 사수의 키는 적어도 175 이상, 허리에서 쐈다면 190에서 200 정도라고 했다.": "The shot entered his chest at a downward angle. Fired from the shoulder, the shooter would have to be at least 175 cm tall (5'9\"). Fired from the hip, 190 to 200 cm (6'3\"–6'7\").",
+"정주원은 160 정도다. 불가능한 각도다.": "Jeong Ju-won is about 160 cm (5'3\"). The angle is impossible.",
+"주원의 주위에는 남자가 많았다. 약혼자 말고도 사귀는 사람이 있다는 소문이 있었다. 테니스 선수 출신인 그녀의 피티 강사였다.": "There were plenty of men around Juwon. Rumor had it she was seeing someone besides her fiancé: her personal trainer, a former tennis player.",
+"사진 속 그 남자는 키가 크고 다부진 체격이었다. 사진을 보고 대충 보아도 180 이상의 키였다. 감정적 충동 살인이라면 질투에 눈이 먼 주원의 남자친구가 범인일 수도 있다.": "The man in the photo was tall and solidly built. Even at a glance, well over 180 cm. If this was a crime of passion, a boyfriend blinded by jealousy could be our killer.",
+"그녀의 알리바이는 톨게이트 CCTV 사진으로도 확인되었다. 사건 시각, 그녀는 자기 승용차를 몰고 서울요금소를 지나 서울 방향으로 가고 있었다.": "Her alibi was confirmed by a tollgate camera, too. At the time of the shooting she was driving her own car through the Seoul tollgate, heading into the city.",
+"그런데도 그녀에 대한 찝찝한 감정을 지울 수 없었다. 어쩌면 그녀를 한 번 더 보고 싶은 것인지도 모른다는, 기분 나쁜 느낌이 들었다.": "Even so, I couldn't shake an uneasy feeling about her. An ugly suspicion crept in: maybe I just wanted to see her again.",
+"그만큼 그녀에게는 묘한 끈적거림이 있었다. 잘 떨어지지 않는.": "That was the strange stickiness about her. It didn't come off easily.",
+"주원이와 바닷가에라도 다녀와야겠다고 생각했다. 주원이는 화려한 외모와 달리 사람이 붐비는 곳을 좋아하지 않는다. 힘든 일이 있을 때면 아무도 없는 시골 바닷가를 찾는다.": "I thought I should take Juwon to the sea. For all her glamour, she doesn't like crowds. When things are hard, she goes to some empty beach out in the country.",
+"파도 소리 말고는 아무것도 들리지 않는 곳. 거기서라면 그녀는 다시 웃을지도 모른다.": "A place where you hear nothing but the waves. There, she might smile again.",
+"어쩌면 프러포즈를 서둘러야 할지도 모른다. 그녀를 붙잡아 두려는 조급함인지 사랑인지, 나도 잘 모르겠다.": "Maybe I should hurry the proposal. Whether that's the urge to keep hold of her or love, I can't tell.",
+"의사는 내게 편집증이 있다고 한다. 책상에는 먹지 않는 약들이 쌓여 가고 있다. 정말 내 문제일까. 나를 병원에 억지로 데려간 것도 주원이었다.": "My doctor says I'm paranoid. Pills I don't take are piling up on my desk. Is it really my problem? It was Juwon who dragged me to the clinic in the first place.",
+"몇 주 전, 주원이는 전화를 받지 않았고, 나중에 그녀가 클럽에 있었다는 사실을 알았다. 나는 그 손목을 잡았다. 처음은 아니었다.": "A few weeks ago Juwon didn't answer her phone, and later I found out she'd been at a club. I grabbed her by the wrist. It wasn't the first time.",
+"주원이도 그날은 참지 않았다. 언성이 높아졌다. 그날은 손이 손목에서 멈추지 않았다.": "That day, Juwon didn't hold back either. Our voices rose. That day my hands didn't stop at her wrist.",
+"정신을 차렸을 때 내 두 손은 그녀의 목에 있었다. 손을 뗐을 때 그녀는 이미 의식이 없었다. 잠시 뒤 깨어났다.": "When I came to my senses, both my hands were around her throat. By the time I let go, she was unconscious. A moment later she came to.",
+"이튿날 그녀의 목에 자국이 올라왔다. 붉은 줄이 다섯 개였다. 내 손가락 수와 같았다.": "The next day the marks rose on her neck. Five red lines. The same number as my fingers.",
+"그녀는 거울 앞에 한참 서 있다가 옷장에서 폴로티를 꺼냈다. 한여름이었다. 방송에서 그녀는 깃을 끝까지 채운 채 웃었다.": "She stood at the mirror for a long time, then took a polo shirt from the closet. It was midsummer. On air, she smiled with the collar buttoned all the way up.",
+"주원이는 병원 예약 문자를 내 전화로 보냈다. 가지 않으면 끝이라고 했다. 나는 마지못해 갔다.": "Juwon sent the clinic appointment text to my phone. If I didn't go, she said, we were finished. I went, grudgingly.",
+"의사는 내게 편집증이 있다고 했다.": "The doctor said I was paranoid.",
+"의사의 말을 믿어 본다": "Try believing the doctor",
+"어쩌면 의사의 말이 맞을지도 모른다. 내 머릿속의 일과 바깥의 일 사이에 내가 모르는 틈이 있을지도 모른다. 그 생각을 하면 숨이 조금 쉬어졌다.": "Maybe the doctor is right. Maybe there's a gap I can't see between what happens in my head and what happens outside it. Thinking that, I could breathe a little easier.",
+"내 문제가 아니다": "It's not my problem",
+"내 문제가 아니다. 전화를 뒤집는 사람은 내가 아니다. 클럽에 있던 사람도 내가 아니다.": "It's not my problem. I'm not the one turning phones face-down. I'm not the one who was at the club.",
+"그러나, 이젠 더 이상 견딜 수 없다. 다른 남자의 여자가 될 것 같은 여자를 사랑하는 것을. 그만두어야 한다.": "But I can't take it anymore. Loving a woman who seems about to become another man's. I have to stop.",
+"서랍을 열 때마다 손수건이 먼저 눈에 들어왔다. 접힌 모서리에 작게 수가 놓여 있었다. 이니셜인지 무늬인지 알 수 없었다.": "Every time I opened the drawer, the handkerchief was the first thing I saw. Something small was stitched into one folded corner. Initials or a pattern, I couldn't tell.",
+"돌려주어야 할 물건이었다. 증거품 목록에는 오르지 않은 물건이었다. 나는 서랍을 닫았다.": "It was something I should return. It had never made it onto the evidence list. I closed the drawer.",
+"피티 강사는 체육관 유리벽 너머에서 한 여자의 허리를 받치고 있었다. 나는 한동안 밖에서 그 모습을 보았다.": "Behind the gym's glass wall, the trainer was supporting a woman's waist. I watched from outside for a while.",
+"그의 손은 크고 정확했고, 여자는 그 손에 몸을 맡기고 있었다. 주원도 저렇게 그의 손 위에 누웠을 것이다. 그 생각이 먼저 들었다.": "His hands were large and precise, and the woman gave her weight to them. Juwon must have lain in those hands just like that. That was my first thought.",
+"그는 그날 서울에 있었다고 했다. 오후에는 회원 수업이 있었고 저녁에는 집에 있었다고. 말에 막힘이 없었다.": "He said he'd been in Seoul that day. Clients in the afternoon, home in the evening. He didn't stumble once.",
+"그러는 동안 그는 손목의 밴드를 계속 만지작거렸다. 거짓말하는 사람의 버릇인지 운동하는 사람의 버릇인지 나는 구별하지 못했다.": "All the while, he kept fiddling with the band on his wrist. A liar's habit or an athlete's, I couldn't tell.",
+"의외였던 건 그가 주원과의 관계를 부정하지 않았다는 것이다. 그는 그녀를 사랑한다고 했다. 죽은 약혼자에 대해서는 불쌍한 사람이었다고만 했다.": "What surprised me was that he didn't deny the affair. He said he loved her. Of the dead fiancé he said only that he was a poor guy.",
+"사망자의 휴대전화에는 그날 저녁 주원에게 건 전화가 서른 통 가까이 남아 있었다. 한 통도 연결되지 않았다.": "The dead man's phone showed nearly thirty calls to Juwon that evening. Not one got through.",
+"서른 번의 신호음이 어딘가에서 울렸을 것이다. 그녀가 서울에 있었다면 서울 어딘가에서.": "Thirty rings must have sounded somewhere. If she was in Seoul, somewhere in Seoul.",
+"나는 그 숫자를 집착이라고 불러야 할지 걱정이라고 불러야 할지 정하지 못했다. 정하지 못한 채로, 내가 그녀 쪽으로 한 걸음 더 가 있다는 것만 알았다.": "I couldn't decide whether to call that number obsession or worry. Still undecided, I knew only that I had taken one more step toward her.",
+"순간 전화에 메세지음이 들렸다. 나는 잘못을 하다 들킨 아이처럼 황급히 전화를 들었다. 중학생 딸의 '아빠 오늘 언제 오냐'는 메세지였다.": "Just then my phone chimed. I snatched it up like a kid caught in the act. A text from my daughter, who's in middle school: 'dad when r u coming home'",
+"딸의 메시지가 화면에 떠 있다.": "My daughter's message is on the screen.",
+"이모티콘을 붙여 답장한다": "Reply with an emoji",
+"잘 쓰지 않던 이모티콘을 써서 답장했다.": "I replied, adding an emoji, which I almost never use.",
+"통화 기록부터 다시 본다": "Go back over the call log",
+"답장은 나중으로 미뤘다. 서른 통의 발신 시각을 하나씩 수첩에 옮겨 적었다. 간격이 점점 짧아지다가, 어느 순간 끊겨 있었다.": "I put off replying. I copied the times of the thirty calls into my notebook, one by one. The gaps grew shorter and shorter, then simply stopped.",
+"답장하려다 서랍을 연다": "Start to reply, open the drawer",
+"답장을 쓰다 말고 서랍을 열었다. 손수건은 접힌 그대로였다. 나는 '곧 간다'고만 보냈다.": "Halfway through typing, I opened the drawer. The handkerchief lay folded as before. All I sent was 'home soon.'",
+"반지는 서랍 안쪽, 양말 뒤에 있었다. 석 달 전에 산 것이었다. 상자를 열면 불빛이 한 점 맺혔다가 사라진다.": "The ring was at the back of the drawer, behind my socks. I bought it three months ago. When I open the box, a point of light gathers and fades.",
+"바닷가에서 이걸 내밀면 주원이는 웃을 것이다. 아니면 웃는 척을 할 것이다. 나는 그 둘을 구별할 자신이 없었다.": "If I hold this out at the beach, Juwon will smile. Or pretend to. I'm not sure I can tell the difference.",
+"결혼하면 내 것은 모두 그녀의 것이 된다. 그녀가 원하는 것이 나인지, 결혼한 뒤의 나의 재산인지. 그런 생각을 하는 내가 싫었다.": "Once we marry, everything I have becomes hers. Does she want me, or what I'll own once we're married? I hated myself for thinking it.",
+"저녁에 주원이가 왔다. 어제와 달랐다. 난수는 다시 양의 수로 돌아와 있었다.": "Juwon came over in the evening. She was different from yesterday. The number had turned positive again.",
+"그녀는 내 이마에 손을 얹어 보고, 밥을 차리고, 내가 좋아하는 이야기만 골라서 했다. 다정했다. 너무 다정해서 나는 그 다정함이 어디서 왔는지부터 생각했다.": "She laid a hand on my forehead, made dinner, and talked only about things I like. She was tender. So tender that the first thing I wondered was where it came from.",
+"사람은 떠날 준비를 끝냈을 때 가장 다정해진다고, 어디서 들은 말인지 내가 지어낸 말인지 모르겠다.": "People are kindest once they've finished getting ready to leave. I don't know if I heard that somewhere or made it up.",
+"바닷가에 가자고 했다. 그녀는 창밖을 한참 보다가 이번 주는 안 된다고 했다. 정리할 일이 있다고.": "I asked her to come to the sea. She looked out the window a long time, then said not this week. She had things to sort out.",
+"무엇을 정리하는지는 묻지 않았다. 묻는 순간 나는 그녀가 용납하지 않는 사람이 된다.": "I didn't ask what. The moment I asked, I would become someone she won't tolerate.",
+"그녀가 머리를 쓸어 넘길 때 냄새가 났다. 담배였다. 주원이는 담배를 피우지 않는다.": "When she pushed back her hair, I caught a smell. Cigarettes. Juwon doesn't smoke.",
+"나는 그 냄새로 한 남자를 만들었다. 키가 크고 손이 크다. 웃을 때 입을 크게 벌리고 웃는 호탕한 남자.": "From that smell I built a man. Tall, big hands. The kind who laughs out loud with his mouth wide open.",
+"그는 그녀를 사람 없는 바닷가에 데려간다. 그녀가 왜 전화기를 뒤집어 놓는지도 그는 안다.": "He takes her to empty beaches. He knows why she turns her phone face-down.",
+"한 번도 본 적 없는 남자가 이상하게 선명했다. 선명해질수록 그가 내 머릿속에만 사는 사람일지도 모른다는 생각이 들었다. 그 생각이 더 무서웠다.": "A man I had never seen was strangely vivid. The more vivid he got, the more I wondered if he lived only in my head. That thought scared me more.",
+"책상에서 약병을 꺼냈다.": "I took the pill bottle out of the desk.",
+"손 안에서 약병이 달그락거린다.": "The pill bottle rattles in my hand.",
+"약을 먹는다": "Take a pill",
+"뚜껑을 열고 한 알을 삼켰다. 물 없이 삼킨 약이 목에 걸렸다. 머릿속의 남자가 조금 흐려졌다. 흐려졌을 뿐, 사라지지는 않았다.": "I opened the cap and swallowed one. Without water, it caught in my throat. The man in my head blurred a little. Only blurred. He didn't go away.",
+"서랍에 다시 넣는다": "Put it back in the drawer",
+"잠시 고민하다 다시 서랍 속에 밀어 넣었다.": "I hesitated a moment, then shoved it back into the drawer.",
+"몇 달째 깜빡이던 형광등을 갈았다. 식탁 의자를 끌어다 놓고 올라섰다. 천장이 가까워지자 방이 달라 보였다.": "I replaced the fluorescent light that had been flickering for months. I dragged a dining chair over and stood on it. With the ceiling close, the room looked different.",
+"식탁도, 소파도, 현관도, 늘 보던 것들이 모두 한 뼘씩 낮아져 있었다. 나는 의자 위에서 한참 내려오지 못했다.": "The table, the sofa, the front door — everything I saw every day had dropped a hand's width. For a long time I couldn't bring myself to step down.",
+"별장 벽난로 위의 총걸이가 떠올랐다. 내 팔로도 닿지 않던 높이. 그리고 식탁에서 조금 비켜나 있던 의자 하나.": "I thought of the gun rack above the fireplace at the country house. Too high even for my arm. And one chair, set slightly apart from the dining table.",
+"현장 사진을 넘기면서 나는 그 의자를 몇 번이나 지나쳤다. 의자 높이를 더하면 키 160의 여자는 190이 넘는 남자가 된다.": "Flipping through the scene photos, I'd passed over that chair again and again. Add the height of the chair, and a 160 cm woman becomes a man over 190.",
+"톨게이트 사진을 다시 꺼냈다. 핸들 위의 손을 한참 보았다. 손수건을 내밀던 손을 떠올렸다. 길고 마른 손가락, 비어 있던 약지.": "I took out the tollgate photo again. I studied the hands on the wheel for a long time. I remembered the hand holding out the handkerchief. Long, thin fingers. A bare ring finger.",
+"사진 속 약지에는 반지가 있었다. 아니, 있는 것처럼 보였다. 해상도가 낮은 사진에서는 빛 한 점이 반지가 되기도 한다.": "In the photo, the ring finger had a ring. Or seemed to. In a low-resolution image, a single point of light can become a ring.",
+"그녀가 알리바이를 만들기 위해 친구에게 사주했을 수도 있다. 아니면 우연히 그날 그녀와 비슷한 체형의 친구가 차를 빌렸을 수도 있다.": "She could have put a friend up to it for an alibi. Or a friend with her build just happened to borrow the car that day.",
+"나는 보고 싶은 것을 보고 있는지도 몰랐다. 그녀를 범인으로 만들고 싶은 건지, 그녀를 다시 볼 핑계를 만들고 싶은 건지.": "Maybe I was seeing what I wanted to see. Did I want to make her the killer, or did I want an excuse to see her again?",
+"부부싸움을 할 때면 아내는 내가 자기를 피의자처럼 본다고 했다. 그때는 그저 말도 안 되는 소리라고 생각했다.": "When we fought, my wife used to say I looked at her like a suspect. Back then I thought it was nonsense.",
+"아침 일찍 관리인에게서 전화가 왔다. 현장 봉인이 풀리자 그녀가 별장에 와 있다고 했다. 짐을 정리하러 왔다는데 벌써 이틀째라고.": "Early in the morning the caretaker called. Now that the scene had been released, she was at the house. She said she'd come to pack her things — and it was already the second day.",
+"나는 전화를 끊고 한동안 아무것도 하지 않았다. 오전 내내 손수건이 있는 서랍을 몇 번 열었다 닫았다.": "I hung up and did nothing for a while. All morning I opened and closed the drawer with the handkerchief in it.",
+"마지막으로 서랍을 연다.": "I open the drawer one last time.",
+"손수건을 외투 주머니에 넣는다": "Put the handkerchief in my coat pocket",
+"마지막으로 열었을 때 손수건을 꺼내 외투 주머니에 넣었다. 돌려주기 위해서.": "The last time I opened it, I took out the handkerchief and put it in my coat pocket. To return it.",
+"손수건을 증거품 봉투에 담는다": "Seal the handkerchief in an evidence bag",
+"마지막으로 열었을 때 손수건을 꺼내 증거품 봉투에 담았다. 모서리의 자수를 감식에 맡겨 볼 생각이었다. 돌려주기 위해서가 아니었다.": "The last time I opened it, I took out the handkerchief and sealed it in an evidence bag. I meant to have forensics look at the embroidery. Not to return it.",
+"서랍을 잠근다": "Lock the drawer",
+"마지막으로 열었을 때도 손수건은 그 자리에 있었다. 나는 서랍을 닫고 열쇠를 돌렸다.": "The last time I opened it, the handkerchief was still there. I closed the drawer and turned the key.",
+"아침부터 주원이는 전화를 받지 않았다. 꺼진 것은 아니었다. 신호는 갔다. 어딘가에서, 뒤집힌 채로 울리고 있을 것이다.": "Juwon hadn't picked up since morning. Her phone wasn't off. It rang through. Somewhere, it was ringing face-down.",
+"나는 그 전화가 놓인 탁자를 상상했다. 탁자 옆의 손, 그 손 옆의 다른 손.": "I pictured the table the phone lay on. A hand beside it. Another hand beside that one.",
+"열 번째쯤에서 세는 것을 그만두었다. 스무 번째쯤에서 다시 세기 시작했다.": "Around the tenth call I stopped counting. Around the twentieth I started again.",
+"스물한 번째 신호음이 끊겼다.": "The twenty-first ring cuts off.",
+"다시 건다": "Call again",
+"정리할 일이 있다고 했다. 무엇을. 누구를.": "She'd said she had things to sort out. What. Who.",
+"주원이는 힘든 일이 있으면 아무도 없는 바닷가로 간다. 나는 그런 곳을 한 군데밖에 알지 못했다.": "When things are hard, Juwon goes to an empty beach. I knew of only one.",
+"동쪽으로 차를 몰았다. 터널 안에서는 신호가 끊겼고, 터널을 빠져나오면 다시 신호가 갔다. 받지 않는 전화도 신호음은 똑같았다.": "I drove east. The signal died in the tunnels and came back when I came out. A phone no one answers rings the same either way.",
+"'이제 그만하자'고 문자를 보낸다": "Text her: 'Let's end this'",
+"전화를 끊고 문자를 썼다. 이제 그만하자. 보내고 나서 한참을 화면만 보았다. 답은 오지 않았다.": "I hung up and typed a message. Let's end this. After I sent it, I stared at the screen for a long time. No reply came.",
+"끝내더라도 확인은 해야 했다. 그녀가 거기 있는지, 누구와 있는지. 그래야 끝낼 수 있을 것 같았다.": "Even if it was over, I had to see for myself. Whether she was there, and who she was with. Only then, I felt, could I end it.",
+"동쪽으로 차를 몰았다. 터널 안에서는 신호가 끊겼고, 터널을 빠져나오면 다시 신호가 갔다. 이번에는 아무에게도 걸지 않았다.": "I drove east. The signal died in the tunnels and came back when I came out. This time I didn't call anyone.",
+"나는 무엇을 확인하러 가는 걸까. 그녀가 거기 없기를 바라는지, 있기를 바라는지.": "What am I going there to confirm? Do I want her not to be there, or to be there?",
+"없다면 나는 병든 사람이고, 있다면 나는 버려진 사람이다.": "If she isn't, I'm sick. If she is, I've been thrown away.",
+"외투 속으로 돌아온 손수건을 만지작거렸다. 용의자 그녀에게 돌려주어야 한다. 그녀를 한 번 더 만나 봐야겠다.": "I fingered the handkerchief, back in my coat pocket. I have to return it to her — my suspect. I need to see her once more.",
+"조수석에 증거품 봉투를 올려놓았다. 봉투 너머로 자수가 비쳤다. 그녀를 한 번 더 만나 봐야겠다.": "I set the evidence bag on the passenger seat. The embroidery showed through the plastic. I need to see her once more.",
+"빈 외투 주머니에 손을 넣었다. 손수건은 서랍에 두고 왔다. 그래도 그녀를 한 번 더 만나 봐야겠다.": "I put my hand into my empty coat pocket. I'd left the handkerchief in the drawer. Still, I need to see her once more.",
+"속초까지 세 시간. 빨리 가면 저녁이 되기 전에 도착할 수 있다. 나는 차에 시동을 걸었다.": "Three hours to Sokcho, on the east coast. If I hurried, I'd make it before evening. I started the car.",
+"그녀의 설명을 들어야겠다. 의자 위에 올라섰는지, 올라서서 엽총을 쐈을 때 총구의 높이는 어디쯤이었는지. CCTV 속에서 운전하던 여자가 그녀가 맞는지. 직접 들어야겠다.": "I needed her to explain. Whether she stood on the chair. Where the muzzle was when she fired from up there. Whether the woman driving in the tollgate photo was really her. I needed to hear it myself.",
+"남은 한 정을 회수했던가. 기억나지 않았다.": "Had anyone collected the other gun? I couldn't remember.",
+"고속도로 진입로가 보인다.": "The highway on-ramp comes into view.",
+"서에 전화해 남은 한 정을 확인한다": "Call the station about the other gun",
+"갓길에 차를 세우고 서에 전화를 걸었다. 남은 한 정은 회수되지 않았다. 벽난로 위, 걸이 하나가 아직 차 있었다.": "I pulled onto the shoulder and called the station. The other gun had never been collected. Above the fireplace, one hook was still taken.",
+"딸에게 늦는다고 문자를 보낸다": "Text my daughter that I'll be late",
+"출발하기 전에 딸에게 문자를 보냈다. 오늘 좀 늦어. 이번에는 이모티콘을 붙이지 못했다.": "Before setting off, I texted my daughter. gonna be late tonight. This time I couldn't add an emoji.",
+"그냥 출발한다": "Just go",
+"기억나지 않는 것을 기억해 내려 애쓰지 않았다. 액셀을 밟았다.": "I didn't try to remember what I couldn't. I stepped on the gas.",
+"해 질 녘에야 도착했다. 붉은 해가 산등성이를 넘고 있었다. 별장 앞에 차를 세우고 현관문을 향했다. 그녀가 있는 곳으로.": "It was sunset by the time I arrived. A red sun was slipping over the ridge. I parked in front of the house and walked to the front door. To where she was.",
+"자정이 다 되어서야 도착했다. 별장 앞까지 올라가지 않고 길가 차를 세웠다. 별장 앞에 낯선 차가 한 대 서 있었다. 결국 주원이에게는 다른 남자가 있었다.": "It was nearly midnight when I got there. I didn't drive up to the house; I parked by the road. A car I didn't know stood out front. So Juwon did have another man.",
+"자정이 가까워 현관문이 열리고 한 남자가 나왔다. 현관 불빛을 등지고 있어서 얼굴은 보이지 않았다. 키가 크고 다부져 보였다.": "Close to midnight the front door opened and a man came out. With the porch light behind him, I couldn't see his face. He looked tall and solid.",
+"그는 차 옆에 서서 담배를 한 대 피웠다. 바람을 타고 냄새가 여기까지 오는 것 같았다. 그녀의 머리칼에서 맡았던 냄새였다.": "He stood by the car and smoked a cigarette. The wind seemed to carry the smell all the way to me. The smell I'd caught in her hair.",
+"내가 지어낸 남자가 거기 서 있었다. 아니, 내가 지어냈다고 믿었던 남자가.": "The man I'd made up was standing there. No — the man I had believed I made up.",
+"시동을 걸고 떠나려다 차 안에 그대로 있었다.": "I started the engine to leave, then just sat there in the car.",
+"담배 연기가 현관 불빛 속으로 흩어진다.": "Cigarette smoke drifts apart in the porch light.",
+"그 남자가 떠나기를 기다린다": "Wait for him to leave",
+"그 남자가 먼저 떠나기를 기다렸다. 주원이에게 미련 따윈 없다. 깨문 입술에 피가 흘렀다.": "I waited for him to leave first. I have no feelings left for Juwon. Blood ran from the lip I'd bitten.",
+"반지 상자를 꺼낸다": "Take out the ring box",
+"주머니에서 반지 상자를 꺼냈다. 열자 불빛이 한 점 맺혔다가 사라졌다.": "I took the ring box from my pocket. When I opened it, a point of light gathered and faded.",
+"받을 사람이 없는 물건이었다. 아니, 돌려주어야 할 물건이었다. 그 남자의 차가 떠날 때까지 나는 상자를 닫지 못했다.": "It was something no one would accept. No — something I should give back. I couldn't close the box until his car had gone.",
+"거실의 불이 꺼졌다. 남자의 차가 완전히 사라진 뒤 나는 차에서 내려 현관으로 향했다. 그녀가 안에 있을 그곳으로.": "The living-room light went out. Once his car had disappeared completely, I got out and walked to the front door. To where she would be.",
+"형사는 주머니 속의 손수건을 꺼내 든다. 사건 현장의 현관문을 두드린다.": "The detective takes the handkerchief out of his pocket. He knocks on the door of the crime scene.",
+"형사는 증거품 봉투에 든 손수건을 꺼내 든다. 사건 현장의 현관문을 두드린다.": "The detective takes out the handkerchief in its evidence bag. He knocks on the door of the crime scene.",
+"형사는 빈 외투 주머니에 손을 넣었다 뺀다. 사건 현장의 현관문을 두드린다.": "The detective slips a hand into his empty coat pocket and draws it out again. He knocks on the door of the crime scene.",
+"남자는 주머니 속의 반지를 만지작거리며 별장으로 발걸음을 옮긴다. 현관에 다가가자 센서등이 켜진다.": "Fingering the ring in his pocket, the man walks toward the house. As he nears the porch, the motion-sensor light clicks on.",
+"아무런 기척이 없자 남자는 열쇠로 문을 열고 들어선다.": "When no one answers, the man lets himself in with his key.",
+"여자는 타월 한 장만으로 몸을 가린 채 거실로 나온다. 형사는 급히 고개를 돌린다.": "The woman comes into the living room wrapped in nothing but a towel. The detective quickly looks away.",
+"칠흑같이 어두운 실내에 현관 센서등만이 거실을 비춘다.": "Inside, pitch-black. Only the porch light reaches into the living room.",
+"남자는 주머니에서 반지 상자를 꺼내 연다. 이걸 주려고 했어. 이제 그만하자. 목소리가 생각보다 담담하다.": "The man takes out the ring box and opens it. I was going to give you this. Let's end it. His voice is calmer than he expected.",
+"여자는 상자를 받지 않는다. 남자는 상자를 닫아 다시 주머니에 넣는다. 여자가 웃는다. 넌 내 거야. 아무 데도 못 가.": "She doesn't take the box. He closes it and puts it back in his pocket. She laughs. You're mine. You're not going anywhere.",
+"당황한 형사는 현관을 나와 해가 지는 하늘을 보며 담배를 빼어 문다. 형사의 담배가 다 타들어 갈 때쯤 하늘은 불타는 듯 붉어진다.": "Flustered, the detective steps out of the house, looks up at the setting sun, and puts a cigarette between his lips. By the time it has burned down, the sky is blazing red.",
+"여자는 의자에 올라가 벽에 걸린 사냥총을 꺼내 든다.": "The woman climbs onto a chair and takes the hunting shotgun down from the wall.",
+"여자는 총구를 자기 목에 댄다. 남자가 말한다. 그 총엔 실탄이 없어.": "She presses the muzzle to her own throat. The man says: there are no shells in it.",
+"여자는 한 손으로 장식장 서랍을 열어 상자 하나를 바닥에 던진다. 뚜껑이 열린 탄약 상자는 비어 있다.": "With one hand she pulls open a cabinet drawer and throws a box to the floor. The lid falls open. The box of shells is empty.",
+"남자가 여자를 부르며 달려드는 순간 센서등이 꺼진다.": "As the man lunges for her, calling her name, the motion light goes out.",
+"어둠 속에서 두 사람의 손이 총신 위에서 엉킨다. 의자 다리가 바닥을 긁는다.": "In the dark, their hands tangle on the barrel. A chair leg scrapes across the floor.",
+"칠흑같이 어두운 실내에 현관 센서등만이 거실을 비춘다. 남자의 눈에서 불타는 분노가 번쩍인다.": "Inside, pitch-black. Only the porch light reaches into the living room. Rage flashes in the man's eyes.",
+"남자는 끓어오는 분노를 참을 수 없었다. 괴성을 지르며 주원에게 달려들었다.": "He can't contain the rage boiling up in him. With a howl, he lunges at Juwon.",
+"여자는 의자에 올라가 벽에 걸린 사냥총을 꺼내 든다. 여자의 몸에서 타월이 흘러내린다.": "The woman climbs onto a chair and takes the hunting shotgun down from the wall. The towel slips from her body.",
+"남자가 소리를 지르며 한 발자국 다가가는 순간 센서등이 꺼진다.": "As the man takes a step toward her, shouting, the motion light goes out.",
+"어둠 속에서 총소리가 울린다.": "A gunshot rings out in the dark.",
+"형사는 무슨 소리를 들은 것처럼 현관문으로 고개를 돌린다.": "The detective turns toward the door, as if he heard something.",
+"현관문 너머가 조용하다.": "Beyond the door, silence. He carries no gun — few Korean detectives do.",
+"수갑을 꺼낸다": "Take out the handcuffs",
+"그녀에게 다가간다": "Go to her",
+"손수건을 내민다": "Hold out the handkerchief",
+"차로 돌아간다": "Walk back to the car",
+"돌아오는 길": "The Way Home",
+"서향집 · 중간 엔딩": "The West-Facing House · Middle Ending",
+"손수건": "The Handkerchief",
+"놓아주다": "Let Go",
+"붙잡다": "Hold On",
+"수갑을 채운 건 그날 밤이었다. 그녀는 저항하지 않았다. 손목에 쇠가 닿았을 때 그녀는 놀란 얼굴이 아니었다. 무언가를 확인한 얼굴이었다.": "I put the cuffs on her that night. She didn't resist. When the steel touched her wrists, it wasn't a look of surprise on her face. It was the look of someone confirming something.",
+"그녀는 아무것도 설명하지 않았다. 목의 자국도, 병원 기록도 꺼내지 않았다.": "She explained nothing. She didn't bring up the marks on her neck, or the medical records.",
+"톨게이트를 지난 건 그녀의 친구였다. 그날 그녀가 별장에 있었다는 걸 아무도 몰라야 했다고, 그녀는 그것만 말했다.": "The one who drove through the tollgate was her friend. No one could know she'd been at the house that day — that was all she would say.",
+"다만 나는 끝내 알지 못했다. 그날 밤 그 남자가 무엇을 말하러 왔는지.": "But I never did learn what that man had come to say that night.",
+"취조실에서 그녀는 의자 이야기를 순순히 했다. 톨게이트를 지난 건 그녀의 친구였다.": "In the interrogation room she told me about the chair without a fight. The one who drove through the tollgate was her friend.",
+"그녀는 깃을 내려 목을 보여 주었다. 자국은 이미 없었다. 병원 기록이 대신 남아 있었다. 변호사는 정당방위를 말할 것이다.": "She pulled down her collar to show me her neck. The marks were long gone. The medical records remained in their place. Her lawyer would argue self-defense.",
+"나는 그 판단이 내 몫이 아니라는 데 안도했다.": "I was relieved that judgment wasn't mine to make.",
+"퇴근길에 백화점에 들렀다. 중학생 딸이 무엇을 좋아하는지 점원에게 물어야 했다.": "On my way home from work I stopped at a department store. I had to ask the clerk what a middle-school girl might like.",
+"점원이 먼저 권한 것은 수가 놓인 손수건 세트였다. 나는 다른 것을 골랐다.": "The first thing the clerk suggested was a set of embroidered handkerchiefs. I chose something else.",
+"현관을 열자 새로 간 형광등이 환했다. 딸이 아빠 오늘은 왜 이렇게 일찍 왔냐고 물었다.": "When I opened the front door, the new fluorescent light was bright. My daughter asked why I was home so early today.",
+"나는 끝내 수갑을 꺼내지 못했다.": "In the end, I never took out the handcuffs.",
+"손수건을 돌려주었다. 그녀는 받지 않고 내 손에 그대로 쥐여 주었다.": "I gave back the handkerchief. She didn't take it; she folded my hand closed around it.",
+"보고서에는 사고사라고 적었다. 의자는 식탁 옆으로 돌아가 있었다. 톨게이트 사진 속 약지의 빛은 해상도의 문제였다.": "In my report I wrote accidental death. The chair had gone back beside the table. The point of light on the ring finger in the tollgate photo was a matter of resolution.",
+"그 뒤로 나는 주말마다 동쪽으로 차를 몰았다. 딸의 메시지에 답하는 일이 줄었다. 아내는 더 이상 내가 자기를 피의자처럼 본다고 말하지 않았다. 아무것도 묻지 않았다.": "After that I drove east every weekend. I answered my daughter's texts less and less. My wife stopped saying I looked at her like a suspect. She didn't ask anything at all.",
+"어느 밤 그녀의 전화가 울렸다. 내 시선이 닿기도 전에 그녀는 전화를 뒤집어 놓았다.": "One night her phone rang. Before my eyes could reach it, she flipped it face-down.",
+"벽난로 위에는 총 한 정이 아직 걸려 있었다.": "One gun still hung above the fireplace.",
+"그녀는 가끔 전화를 뒤집어 놓았다. 나는 묻지 않았다. 묻는 순간 나는 그녀가 용납하지 않는 사람이 된다.": "Sometimes she turned her phone face-down. I didn't ask. The moment I asked, I would become someone she won't tolerate.",
+"외투 주머니": "Coat pocket",
+"증거품 봉투": "Evidence bag",
+"서랍": "Drawer",
+"형사는 차 문손잡이를 잡았다가 놓았다. 주원을 만나봐야 마음을 정할 수 있을 것 같았다. 형사는 서향집 현관으로 되돌아가 문을 다시 두드렸다.": "The detective gripped the car door handle, then let go. He couldn't decide anything until he'd seen Juwon. He walked back up to the house and knocked again.",
+"형사는 주원을 만나봐야 마음을 정할 수 있을 것 같았다. 담배를 신발에 비벼끄고 현관문을 다시 두드렸다.": "He couldn't decide anything until he'd seen Juwon. He ground his cigarette out under his shoe and knocked on the door again.",
+"서쪽을 향한 현관문이 붉게 타오르고 있다.": "The house faces west. Its front door burns red in the last of the sun."
+};
+const UI = {
+  warn: 'This story contains domestic violence, strangulation,<br>self-harm, and a death by gunshot.',
+  anykey: '[ PRESS ANY KEY ]',
+  m1: '1. New Game', m2: '2. Continue', m3: '3. Endings', m4: '4. Options',
+  m5: '5. Still Preview <span style="opacity:.6">(dev)</span>', m6: '6. Chapter Select <span style="opacity:.6">(dev)</span>',
+  foot: 'v0.8 · 11 chapters · 3 endings',
+  sunset: 'SUNSET', midnight: 'MIDNIGHT',
+  keys: 'SPACE·CLICK next &nbsp; F stats &nbsp; R review &nbsp; Q title',
+  quit: 'Return to the title screen?<br><small>Progress is saved at the start of this chapter.</small>',
+  yes: 'Y Yes', no: 'N No', again: '1. Play Again', totitle: '2. Title Screen',
+  chselH: 'Chapter Select (dev)', chselN: 'Stats start at 0 and are not saved.',
+  endH: 'Endings', stlH: 'Still Preview',
+  stlN: 'Click a slot to pick an image and preview it with a retro pixel effect. (Shown on this screen only, not saved.)',
+  stl1: 'STILL 01 · Cover — Juwon', stl2: 'STILL 02 · The West-Facing House and a Cigarette',
+  back: '◀ Back', optH: 'Options'
+};
+function applyLang(){
+  document.documentElement.lang = OPT.lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    if (el.dataset.ko == null) el.dataset.ko = el.innerHTML;
+    el.innerHTML = OPT.lang === 'en' ? UI[el.dataset.i18n] : el.dataset.ko;
+  });
+}
+function renderOpts(focus){
+  const rows = [
+    ['lang',  '언어 Language', { ko:'한국어', en:'English' }],
+    ['speed', U('글자 속도','Text speed'), { slow:U('느림','Slow'), normal:U('보통','Normal'), fast:U('빠름','Fast'), instant:U('즉시','Instant') }],
+    ['music', U('음악','Music'), { true:U('켜기','On'), false:U('끄기','Off') }],
+    ['sfx',   U('효과음','Sound effects'), { true:U('켜기','On'), false:U('끄기','Off') }]
+  ];
+  const box = $('#optRows'); box.innerHTML = '';
+  rows.forEach(([key, name, vals], i) => {
+    const b = document.createElement('button');
+    b.textContent = (i+1) + '. ' + name + '  ◀ ' + vals[OPT[key]] + ' ▶';
+    b.onclick = e => {
+      e.stopPropagation();
+      const ks = Object.keys(vals), cur = ks.indexOf(String(OPT[key]));
+      let v = ks[(cur + 1) % ks.length]; if (key === 'music' || key === 'sfx') v = v === 'true';
+      OPT[key] = v; saveOpt();
+      if (key === 'lang') applyLang();
+      if (key === 'music') v ? playBgm() : stopBgm();
+      if (key === 'sfx' && v) sfx('pick');
+      renderOpts(i);
+    };
+    box.appendChild(b);
+  });
+  if (focus != null) box.children[focus].focus();
+}
+
 /* ---------- 유틸 ---------- */
 const $ = s => document.querySelector(s);
 const store = {
@@ -586,6 +858,7 @@ bgm.loop = true; bgm.volume = .6;
 let bgmFade = null;
 const BGM_FULL = .6, BGM_LOW = .25;
 function playBgm(vol = BGM_FULL){
+  if (!OPT.music) return;
   clearInterval(bgmFade);
   if (bgm.paused){ bgm.volume = vol; bgm.play().catch(() => {}); return; }
   bgmFade = setInterval(() => {
@@ -617,6 +890,7 @@ function stopBgm(){
 /* ---------- 효과음 (Web Audio 합성) ---------- */
 let actx = null;
 function sfx(kind){
+  if (!OPT.sfx) return;
   try {
     actx = actx || new (window.AudioContext || window.webkitAudioContext)();
     if (actx.state === 'suspended') actx.resume();
@@ -664,7 +938,7 @@ function skipBoot(){ if (bootTimer){ clearInterval(bootTimer); bootTimer=null; }
 /* ---------- 스틸 ---------- */
 function stillHTML(slot, label){
   if (STILLS[slot]) return `<img src="${STILLS[slot]}" alt="">`;
-  return `<div class="ph"><b>${label}</b>이미지 자리</div>`;
+  return `<div class="ph"><b>${label}</b>${U('이미지 자리','image slot')}</div>`;
 }
 function renderStills(){
   $('#titleImg').src = STILLS.cover || '';
@@ -767,8 +1041,8 @@ function showEnding(id){
   store.set('seohyang_endings', got);
   if (!S.preview) store.del('seohyang_save');
   const d = id[1], m = id[2];
-  $('#protoHead').textContent = 'ENDING ' + d + ' · ' + ET[d];
-  $('#protoSub').textContent = '남자의 선택: ' + m.toUpperCase() + ' · ' + MT[m];
+  $('#protoHead').textContent = 'ENDING ' + d + ' · ' + T(ET[d]);
+  $('#protoSub').textContent = U('남자의 선택: ','His choice: ') + m.toUpperCase() + ' · ' + T(MT[m]);
   $('#protoFlags').innerHTML = flagRows(); show('proto');
 }
 function showCg(key){
@@ -776,7 +1050,7 @@ function showCg(key){
   if (key && IMG[key]){ cg.src = IMG[key]; cg.classList.add('on'); } else cg.classList.remove('on');
 }
 function showStill(slot){
-  $('#stillovSlot').innerHTML = stillHTML(slot, slot === 'west' ? 'STILL 02 · 서향집과 담배' : 'STILL 01 · 주원');
+  $('#stillovSlot').innerHTML = stillHTML(slot, slot === 'west' ? U('STILL 02 · 서향집과 담배','STILL 02 · The West-Facing House') : U('STILL 01 · 주원','STILL 01 · Juwon'));
   $('#more').style.display = 'none';
   $('#stillov').classList.add('on'); S.mode = 'still';
 }
@@ -798,7 +1072,7 @@ function setSide(side, img){
     fin.classList.toggle('plain', key !== 'west' || !!STILLS.west);
     fin.classList.toggle('noimg', !src);
     $('#imgFin').src = src;
-    $('#finph').innerHTML = '<b>ENDING 3 그림 자리</b>형사와 밀회';
+    $('#finph').innerHTML = U('<b>ENDING 3 그림 자리</b>형사와 밀회','<b>ENDING 3 image slot</b>The tryst');
     fin.classList.add('on'); return $('#ft');
   }
   hl.classList.toggle('act', side === 'L'); hr.classList.toggle('act', side === 'R');
@@ -806,19 +1080,20 @@ function setSide(side, img){
 }
 function renderTxt(str){
   const el = S.target || $('#txt');
-  if (isDraft && S.review){ el.innerHTML = ''; const sp = document.createElement('span'); sp.className='draft'; sp.textContent = '[초안] ' + str; el.appendChild(sp); }
+  if (isDraft && S.review){ el.innerHTML = ''; const sp = document.createElement('span'); sp.className='draft'; sp.textContent = U('[초안] ','[DRAFT] ') + str; el.appendChild(sp); }
   else el.textContent = str;
 }
 function showText(it, after){
   S.mode = after ? 'choice-typing' : 'text';
-  full = it.t; isDraft = !!it.draft; S.after = after || null;
+  full = T(it.t); isDraft = !!it.draft; S.after = after || null;
   $('#choices').innerHTML = ''; $('#lch').innerHTML = ''; $('#more').style.display = 'none';
   S.target = it.side ? setSide(it.side, it.img) : $('#txt');
   S.target.classList.toggle('prompt', !!after);
   if (it.fx) sceneFx(it.fx);
   let i = 0; S.typing = true; renderTxt('');
   clearInterval(tTimer);
-  tTimer = setInterval(() => { i++; renderTxt(full.slice(0, i)); if (i >= full.length) finishType(); }, 30);
+  const ms = typeMs(); if (!ms) return finishType();
+  tTimer = setInterval(() => { i++; renderTxt(full.slice(0, i)); if (i >= full.length) finishType(); }, ms);
 }
 function finishType(){
   clearInterval(tTimer); S.typing = false; renderTxt(full);
@@ -832,7 +1107,7 @@ function showChoice(it){
     S.choiceBox = box; box.innerHTML = '';
     it.options.forEach((o, k) => {
       const b = document.createElement('button');
-      b.textContent = (k+1) + ') ' + (typeof o.label === 'function' ? o.label(S) : o.label);
+      b.textContent = (k+1) + ') ' + T(typeof o.label === 'function' ? o.label(S) : o.label);
       b.onclick = e => { e.stopPropagation(); pick(o); };
       box.appendChild(b);
     });
@@ -857,19 +1132,29 @@ function advance(){
 }
 function flagRows(){
   const f = S.flags;
-  return `<div><span>형사 · 가정</span><span>${f.family}</span></div>
+  const hk = f.hk ? T(HK_NAME[f.hk]) : '-';
+  return OPT.lang === 'en'
+    ? `<div><span>Detective · Family</span><span>${f.family}</span></div>
+          <div><span>Detective · Doubt</span><span>${f.doubt}</span></div>
+          <div><span>Detective · Pull</span><span>${f.lure}</span></div>
+          <div><span>Detective · Handkerchief</span><span>${hk}</span></div>
+          <div><span>Man · Resignation</span><span>${f.resign}</span></div>`
+    : `<div><span>형사 · 가정</span><span>${f.family}</span></div>
           <div><span>형사 · 의심</span><span>${f.doubt}</span></div>
           <div><span>형사 · 끌림</span><span>${f.lure}</span></div>
-          <div><span>형사 · 손수건</span><span>${HK_NAME[f.hk] || '-'}</span></div>
+          <div><span>형사 · 손수건</span><span>${hk}</span></div>
           <div><span>남자 · 체념</span><span>${f.resign}</span></div>`;
 }
 function renderFlags(){
   const f = S.flags;
-  $('#flags').innerHTML = `<h4>[ 현재 수치 ]</h4>형사 가정 ${f.family} · 의심 ${f.doubt} · 끌림 ${f.lure}<br>손수건 ${HK_NAME[f.hk] || '-'}<br>남자 체념 ${f.resign}`;
+  const hk = f.hk ? T(HK_NAME[f.hk]) : '-';
+  $('#flags').innerHTML = OPT.lang === 'en'
+    ? `<h4>[ CURRENT STATS ]</h4>Detective — Family ${f.family} · Doubt ${f.doubt} · Pull ${f.lure}<br>Handkerchief: ${hk}<br>Man — Resignation ${f.resign}`
+    : `<h4>[ 현재 수치 ]</h4>형사 가정 ${f.family} · 의심 ${f.doubt} · 끌림 ${f.lure}<br>손수건 ${hk}<br>남자 체념 ${f.resign}`;
 }
 function toggleFlags(){ renderFlags(); $('#flags').classList.toggle('on'); }
 function toggleReview(){
-  S.review = !S.review; $('#rv').textContent = S.review ? '검수모드 ON' : '';
+  S.review = !S.review; $('#rv').textContent = S.review ? U('검수모드 ON','REVIEW ON') : '';
   if (!S.typing && S.mode === 'text' && S.target) renderTxt(full);
 }
 function openQuit(){ $('#quit').classList.add('on'); $('#quit button').focus(); }
@@ -881,10 +1166,10 @@ function renderEndings(){
   const hasM = m => got.some(id => id[2] === m);
   const n = [1,2,3].filter(hasD).length;
   $('#endRows').innerHTML = [1,2,3].map(d => hasD(d)
-      ? `<div><span>ENDING ${d}</span><span>${ET[d]}</span></div>`
+      ? `<div><span>ENDING ${d}</span><span>${T(ET[d])}</span></div>`
       : `<div class="lock"><span>ENDING ${d}</span><span>? ? ? ? ? ?</span></div>`).join('')
     + `<div style="border:0;color:var(--dg)"><span>${n} / 3</span><span></span></div>`
-    + `<div style="border:0;margin-top:1.5cqw"><span>남자의 선택</span><span>A · ${hasM('a') ? MT.a : '? ? ?'} &nbsp; B · ${hasM('b') ? MT.b : '? ? ?'}</span></div>`;
+    + `<div style="border:0;margin-top:1.5cqw"><span>${U('남자의 선택','His choice')}</span><span>A · ${hasM('a') ? T(MT.a) : '? ? ?'} &nbsp; B · ${hasM('b') ? T(MT.b) : '? ? ?'}</span></div>`;
 }
 function renderChSel(){
   const box = $('#chRows'); box.innerHTML = '';
@@ -894,9 +1179,10 @@ function renderChSel(){
       b.onclick = e => { e.stopPropagation(); S.flags = Object.assign(fresh(), flags || {}); startChapter(i, { preview:true }); };
       box.appendChild(b);
     };
-    const who = c.pov === 'det' ? '형사' : c.pov === 'man' ? '남자' : '교차';
-    if (c.split){ mk(`${c.n}장 ${who} · 남자B`); mk(`${c.n}장 ${who} · 남자A`, { resign:3 }); }
-    else mk(`${c.n}장 ${who}`);
+    const who = c.pov === 'det' ? U('형사','Detective') : c.pov === 'man' ? U('남자','Man') : U('교차','Crossing');
+    const ch = U(`${c.n}장 ${who}`, `Ch.${c.n} ${who}`);
+    if (c.split){ mk(`${ch} · ${U('남자','Man')} B`); mk(`${ch} · ${U('남자','Man')} A`, { resign:3 }); }
+    else mk(ch);
   });
 }
 function refreshTitle(){
@@ -908,6 +1194,7 @@ function act(a){
   if (a === 'new') newGame();
   else if (a === 'cont') contGame();
   else if (a === 'end'){ renderEndings(); show('endings'); }
+  else if (a === 'opt'){ renderOpts(); show('opts'); }
   else if (a === 'stl'){ renderStills(); show('stills'); }
   else if (a === 'chsel'){ renderChSel(); show('chsel'); }
   else if (a === 'title'){ clearInterval(tTimer); refreshTitle(); renderStills(); show('title'); }
@@ -965,7 +1252,7 @@ document.addEventListener('keydown', e => {
     return;
   }
 
-  if (/^[1-4]$/.test(k)){
+  if (/^[1-9]$/.test(k)){
     const bs = [...document.querySelectorAll('#'+view+' button')];
     const b = bs[+k-1]; if (b) b.click();
   }
@@ -974,7 +1261,7 @@ document.addEventListener('keydown', e => {
 
 document.addEventListener('keyup', e => { if (e.key === ' ' && view === 'game') e.preventDefault(); }, true);
 $('#imgSun').src = IMG.sunset; $('#imgNight').src = IMG.night; $('#imgClimax').src = IMG.climax;
-renderStills(); refreshTitle(); runBoot();
+applyLang(); renderStills(); refreshTitle(); runBoot();
 </script>
 </body>
 </html>
