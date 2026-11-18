@@ -596,6 +596,32 @@ function stopBgm(){
     if (bgm.volume <= 0){ clearInterval(bgmFade); bgm.pause(); bgm.currentTime = 0; bgm.volume = .6; }
   }, 60);
 }
+/* 자동재생이 막혔을 때: 첫 입력에서 다시 시도 */
+['pointerdown','keydown'].forEach(ev => document.addEventListener(ev, () => {
+  if (view !== 'game' && view !== 'boot' && view !== 'warn' && bgm.paused) playBgm();
+  else if (view === 'game' && S.ch != null && CHAPTERS[S.ch].n === 11 && bgm.paused) playBgm();
+}, true));
+
+/* ---------- 효과음 (Web Audio 합성) ---------- */
+let actx = null;
+function sfx(kind){
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state === 'suspended') actx.resume();
+    const t = actx.currentTime;
+    const tone = (freq, start, dur, type, vol) => {
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = type; o.frequency.setValueAtTime(freq, t + start);
+      g.gain.setValueAtTime(vol, t + start);
+      g.gain.exponentialRampToValueAtTime(.0001, t + start + dur);
+      o.connect(g); g.connect(actx.destination);
+      o.start(t + start); o.stop(t + start + dur + .02);
+    };
+    if (kind === 'pick'){ tone(660, 0, .06, 'square', .06); tone(990, .06, .09, 'square', .05); }
+    if (kind === 'chapter'){ tone(110, 0, 1.2, 'triangle', .22); tone(165, .05, 1.0, 'sine', .1); tone(220, .1, .8, 'sine', .05); }
+  } catch(e){}
+}
+
 function show(v){
   if (v === 'game') stopBgm();
   else if (v !== 'boot' && v !== 'warn') playBgm();
@@ -684,12 +710,12 @@ function startChapter(ch, opts){
   S.preview = !!(opts && opts.preview); S.ch = ch;
   S.queue = typeof c.items === 'function' ? c.items(S) : c.items.slice();
   if (!S.preview) store.set('seohyang_save', { ch, flags:S.flags });
-  show('game'); resetScene(!!c.split); showCg(c.cg);
+  show('game'); if (c.n === 11) playBgm(); resetScene(!!c.split); showCg(c.cg);
   $('#chlabel').textContent = '─ ' + c.n + ' ─';
   $('#txt').classList.remove('det','man'); if (c.pov !== 'both') $('#txt').classList.add(c.pov);
   const num = $('#cardnum'); num.textContent = c.n; num.style.color = POV_COLOR[c.pov];
   num.style.animation = 'none'; void num.offsetWidth; num.style.animation = '';
-  $('#card').classList.add('on'); S.mode = 'card';
+  $('#card').classList.add('on'); S.mode = 'card'; sfx('chapter');
 }
 function endChapter(){
   if (S.ch + 1 < CHAPTERS.length) startChapter(S.ch + 1, { preview:S.preview });
@@ -803,6 +829,7 @@ function showChoice(it){
   });
 }
 function pick(o){
+  sfx('pick');
   for (const k in (o.add||{})) S.flags[k] = (S.flags[k]||0) + o.add[k];
   if (o.set) Object.assign(S.flags, o.set);
   $('#choices').innerHTML = ''; $('#lch').innerHTML = ''; S.choiceBox = null;
