@@ -584,22 +584,34 @@ let view = 'boot';
 const bgm = new Audio('audio/Midnight_at_the_Villa.mp3');
 bgm.loop = true; bgm.volume = .6;
 let bgmFade = null;
-function playBgm(){
-  clearInterval(bgmFade); bgm.volume = .6;
-  if (bgm.paused) bgm.play().catch(() => {});
+const BGM_FULL = .6, BGM_LOW = .25;
+function playBgm(vol = BGM_FULL){
+  clearInterval(bgmFade);
+  if (bgm.paused){ bgm.volume = vol; bgm.play().catch(() => {}); return; }
+  bgmFade = setInterval(() => {
+    const d = vol - bgm.volume;
+    if (Math.abs(d) <= .02){ bgm.volume = vol; clearInterval(bgmFade); }
+    else bgm.volume += Math.sign(d) * .02;
+  }, 60);
+}
+/* 장별 음악: 1~2장은 작게 이어서, 3~10장은 끄고, 11장부터 다시 */
+function chapterBgm(n){
+  if (n <= 2) playBgm(BGM_LOW);
+  else if (n === 11) playBgm(BGM_FULL);
+  else stopBgm();
 }
 function stopBgm(){
   clearInterval(bgmFade);
   if (bgm.paused) return;
   bgmFade = setInterval(() => {
     bgm.volume = Math.max(0, bgm.volume - .05);
-    if (bgm.volume <= 0){ clearInterval(bgmFade); bgm.pause(); bgm.currentTime = 0; bgm.volume = .6; }
+    if (bgm.volume <= 0){ clearInterval(bgmFade); bgm.pause(); bgm.currentTime = 0; }
   }, 60);
 }
 /* 자동재생이 막혔을 때: 첫 입력에서 다시 시도 */
 ['pointerdown','keydown'].forEach(ev => document.addEventListener(ev, () => {
   if (view !== 'game' && view !== 'boot' && view !== 'warn' && bgm.paused) playBgm();
-  else if (view === 'game' && S.ch != null && CHAPTERS[S.ch].n === 11 && bgm.paused) playBgm();
+  else if (view === 'game' && bgm.paused && (CHAPTERS[S.ch].n <= 2 || CHAPTERS[S.ch].n === 11)) chapterBgm(CHAPTERS[S.ch].n);
 }, true));
 
 /* ---------- 효과음 (Web Audio 합성) ---------- */
@@ -623,8 +635,7 @@ function sfx(kind){
 }
 
 function show(v){
-  if (v === 'game') stopBgm();
-  else if (v !== 'boot' && v !== 'warn') playBgm();
+  if (v !== 'game' && v !== 'boot' && v !== 'warn') playBgm();
   document.querySelectorAll('.view').forEach(e => e.classList.toggle('on', e.id === v));
   view = v;
   if (v !== 'game') { const b = document.querySelector('#'+v+' button'); if (b) b.focus(); }
@@ -710,7 +721,7 @@ function startChapter(ch, opts){
   S.preview = !!(opts && opts.preview); S.ch = ch;
   S.queue = typeof c.items === 'function' ? c.items(S) : c.items.slice();
   if (!S.preview) store.set('seohyang_save', { ch, flags:S.flags });
-  show('game'); if (c.n === 11) playBgm(); resetScene(!!c.split); showCg(c.cg);
+  show('game'); chapterBgm(c.n); resetScene(!!c.split); showCg(c.cg);
   $('#chlabel').textContent = '─ ' + c.n + ' ─';
   $('#txt').classList.remove('det','man'); if (c.pov !== 'both') $('#txt').classList.add(c.pov);
   const num = $('#cardnum'); num.textContent = c.n; num.style.color = POV_COLOR[c.pov];
