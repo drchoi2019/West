@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>서향집</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bk:#000;--bl:#0000aa;--cy:#00aaaa;--gy:#aaaaaa;--wh:#ffffff;--rd:#aa0000;
+  --lr:#ff5555;--br:#aa5500;--yl:#ffff55;--dg:#555555;--lc:#55ffff;--am:#e09a3a;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#0d0d0d}
+body{display:flex;align-items:center;justify-content:center;font-family:'Nanum Gothic Coding',monospace;color:var(--gy);-webkit-font-smoothing:none;user-select:none}
+#crt{position:relative;width:min(96vw,calc(94vh*1.6),1120px);aspect-ratio:8/5;background:#000;border-radius:1.4cqw;overflow:hidden;
+  box-shadow:0 0 0 10px #1a1a1a,0 0 0 12px #2e2e2e,0 24px 70px #000;container-type:inline-size}
+#crt::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:50;
+  background:repeating-linear-gradient(to bottom,transparent 0,transparent 2px,rgba(0,0,0,.30) 3px)}
+#crt::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:51;
+  background:radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,.55) 100%)}
+#fx{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:40}
+#crt.flash #fx{animation:fl .45s ease-out}
+#crt.flash .view.on{animation:shake .3s}
+@keyframes fl{0%{opacity:.85}100%{opacity:0}}
+@keyframes shake{0%,100%{transform:none}25%{transform:translate(-.6cqw,.3cqw)}50%{transform:translate(.5cqw,-.3cqw)}75%{transform:translate(-.3cqw,.2cqw)}}
+
+.view{position:absolute;inset:0;display:none;font-size:2.05cqw;line-height:1.8;text-shadow:0 0 .35em rgba(170,170,170,.35)}
+.view.on{display:flex}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left;padding:.1em .6em;text-shadow:inherit}
+button:focus,button:hover{outline:none;background:var(--gy);color:#000;text-shadow:none}
+.inv{background:var(--gy);color:#000;text-shadow:none}
+.blink{animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+
+/* boot */
+#boot{flex-direction:column;padding:3cqw 4cqw;white-space:pre;color:var(--gy)}
+/* warning */
+#warn{flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2cqw}
+#warn .box{border:.45cqw double var(--gy);padding:3cqw 5cqw;max-width:70%}
+/* title */
+#title{align-items:stretch}
+#title .left{width:44%;padding:2.5cqw;display:flex}
+#title .right{flex:1;display:flex;flex-direction:column;justify-content:center;padding:2cqw 4cqw 2cqw 2cqw}
+#title h1{margin:0;font-size:8.5cqw;line-height:1.1;color:var(--lr);letter-spacing:.15em;text-shadow:0 0 .25em rgba(255,85,85,.6)}
+#title .sub{color:var(--dg);font-size:1.6cqw;letter-spacing:.35em;margin:.6cqw 0 4cqw .4cqw}
+#title .menu button{display:block;width:100%;margin:.15cqw 0}
+#title .foot{color:var(--dg);font-size:1.4cqw;margin-top:4cqw}
+.still{flex:1;position:relative;border:.4cqw double var(--gy);overflow:hidden;background:#000}
+.still img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;image-rendering:pixelated}
+.ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--dg);font-size:1.6cqw;line-height:1.6;
+  background-color:#050505;background-image:repeating-conic-gradient(#1a1a1a 0 25%,transparent 0 50%);background-size:.6cqw .6cqw}
+.ph b{color:var(--gy);font-size:2cqw}
+/* game */
+#game{flex-direction:column}
+.bar{display:flex;justify-content:space-between;padding:0 1.2em;background:var(--gy);color:#000;text-shadow:none;font-size:1.6cqw;line-height:2}
+#win{flex:1;margin:2cqw 3cqw;border:.45cqw double var(--gy);padding:2.6cqw 3.4cqw;position:relative;display:flex;flex-direction:column}
+#txt{white-space:pre-wrap;word-break:keep-all;color:#d8d8d8}
+#txt.prompt{color:var(--wh)}
+#txt .draft{color:var(--yl)}
+#choices{margin-top:1.6cqw}
+#choices button{display:block;width:100%;color:var(--wh);margin:.2cqw 0}
+#more{position:absolute;right:2cqw;bottom:1.2cqw;color:var(--gy);display:none}
+#rv{color:#000}
+.overlay{position:absolute;inset:0;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:5}
+.overlay.on{display:flex}
+#cardnum{font-size:9cqw;font-weight:700;line-height:1;animation:fade 1.2s ease-out}
+#card .cardsub{color:var(--dg);margin-top:2cqw;letter-spacing:.5em}
+@keyframes fade{from{opacity:0;filter:blur(3px)}to{opacity:1;filter:none}}
+.panel{position:absolute;z-index:8;background:#000;border:.45cqw double var(--gy);padding:1.6cqw 2.4cqw;display:none}
+.panel.on{display:block}
+#flags{top:4cqw;right:4cqw;font-size:1.7cqw;line-height:1.9}
+#flags h4{margin:0 0 .4em;color:var(--wh);font-weight:400}
+#quit{top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+#quit small{color:var(--dg)}
+#quit div{margin-top:1.2cqw;display:flex;gap:2cqw;justify-content:center}
+/* generic list screens */
+.list{flex-direction:column;padding:4cqw 6cqw}
+.list h2{margin:0 0 2cqw;font-weight:400;color:var(--wh);font-size:2.6cqw}
+.list .rows div{display:flex;justify-content:space-between;border-bottom:1px dashed #333;padding:.3cqw 0}
+.list .rows .lock{color:var(--dg)}
+.list .back{margin-top:auto;align-self:flex-start}
+#stills .slots{display:flex;gap:3cqw;flex:1;margin-bottom:2cqw}
+#stills .slot{flex:1;display:flex;flex-direction:column;gap:1cqw}
+#stills .slot .still{flex:1}
+#stills .note{color:var(--dg);font-size:1.5cqw;margin-bottom:1.5cqw}
+#proto .rows{margin:1.5cqw 0 3cqw}
+/* 11장 분할 화면 */
+#split{position:absolute;inset:0;display:none}
+#split.on{display:flex}
+.half{position:relative;flex:0 0 50%;overflow:hidden;transition:flex-basis 1.6s ease,filter .7s;filter:brightness(.38) saturate(.5)}
+.half.act{filter:none}
+#hr{border-left:.45cqw double var(--gy)}
+.half svg{position:absolute;inset:0;width:100%;height:100%}
+.half svg *{transition:opacity 1.2s,fill .25s}
+.stag{position:absolute;top:1cqw;left:1.4cqw;font-size:1.4cqw;line-height:1.8;color:#000;background:var(--gy);padding:0 .6em;text-shadow:none;z-index:2}
+.stxt{position:absolute;left:1.6cqw;right:1.6cqw;bottom:1.6cqw;background:rgba(0,0,0,.85);border:.3cqw solid var(--gy);padding:1.2cqw 1.6cqw;font-size:1.75cqw;line-height:1.75;white-space:pre-wrap;word-break:keep-all;color:#ddd;z-index:2}
+.stxt:has(> div:first-child:empty){display:none}
+.sch{margin-top:.8cqw}
+.sch button{display:block;width:100%;color:var(--wh)}
+#choices button:focus,#choices button:hover,.sch button:focus,.sch button:hover{color:#000;background:var(--gy)}
+.stxt .draft{color:var(--yl)}
+#split.merged #hl{flex-basis:100%}
+#split.merged #hr{flex-basis:0;border:0}
+#split.merged #hl .stag{display:none}
+#hl .redov{opacity:0}
+#hl.red .redov{opacity:.32}
+#hl .ember{opacity:0}
+#hl.red .ember{opacity:1}
+#split.merged #hl .redov{opacity:.4}
+#hr .cone{opacity:0}
+#hr.lit .cone{opacity:.3}
+#hr .lamp{fill:#333}
+#hr.lit .lamp{fill:#ffff55}
+#hr .rdoor{fill:#0d0d0d}
+#hr.lit .rdoor{fill:#3a2e00}
+#more{z-index:3}
+#stillov .still{position:absolute;inset:2cqw 3cqw}
+
+/* v0.5 이미지 */
+#title .tbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% center}
+#title .tshade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.88) 0%,rgba(0,0,0,.72) 30%,rgba(0,0,0,.15) 55%,transparent 70%)}
+#title .tbox{position:relative;width:46%;padding:3cqw 4.5cqw;display:flex;flex-direction:column;justify-content:center;text-shadow:0 0 .4em #000,0 0 .2em #000}
+#title h1{text-shadow:0 0 .25em rgba(255,85,85,.6),0 0 .15em #000}
+.half img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;image-rendering:pixelated;transition:opacity 1.2s,filter 1.2s}
+#hl .sun{object-position:40% center}
+#split.merged #hl .sun{object-position:center 62%}
+.redov{position:absolute;inset:0;background:#ff2a00;mix-blend-mode:overlay;opacity:0;transition:opacity 1.6s;pointer-events:none}
+#hl.red .redov{opacity:.35}
+#split.merged #hl .redov{opacity:.42}
+#hr .night{filter:brightness(.3) saturate(.7)}
+#hr.lit .night{filter:none}
+#hr .cx{opacity:0;object-position:35% center}
+#hr.climax .cx{opacity:1}
+#hr.climax:not(.lit) .cx{filter:brightness(.12)}
+
+/* v0.6 */
+:root{--det:#a6e6e6;--man:#ecc584}
+#txt.det,#lt{color:var(--det)}
+#txt.man,#rt{color:var(--man)}
+#txt.prompt,#lt.prompt{color:var(--wh)}
+#txt .draft,.stxt .draft{color:#ff88ff}
+#fin{position:absolute;inset:0;z-index:4;opacity:0;pointer-events:none;transition:opacity 1.8s}
+#fin.on{opacity:1}
+#fin{overflow:hidden;background:#000}
+#fin img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;image-rendering:pixelated;object-position:center}
+#fin.fallback img.bg{object-position:center 62%}
+#fin .redov{opacity:.38}
+#ft{color:#eee}
+#fin.plain .redov{opacity:0}
+#fin .ph{display:none}
+#fin.noimg .ph{display:flex}
+#fin.noimg img.bg{display:none}
+
+/* v0.7 장면 그림 + 아래 글자창 */
+#win{padding:0;justify-content:flex-end;overflow:hidden}
+#cg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .9s}
+#cg.on{opacity:1}
+#tbox{position:relative;z-index:1;margin:1.6cqw;background:rgba(0,0,0,.84);border:.3cqw solid var(--gy);padding:1.3cqw 2cqw;font-size:1.85cqw;line-height:1.75;min-height:7.5em}
+#tbox #choices{margin-top:.8cqw}
+</style>
+</head>
+<body>
+<div id="crt">
+  <div id="fx"></div>
+
+  <div id="boot" class="view"></div>
+
+  <div id="warn" class="view">
+    <div class="box">이 이야기에는 가정폭력과<br>총기에 의한 죽음이 묘사되어 있습니다.</div>
+    <div class="blink">[ 아무 키나 누르세요 ]</div>
+  </div>
+
+  <div id="title" class="view">
+    <img class="tbg" id="titleImg" alt="">
+    <div class="tshade"></div>
+    <div class="tbox">
+      <h1>서향집</h1>
+      <div class="sub">A WEST-FACING HOUSE</div>
+      <div class="menu">
+        <button data-act="new">1. 처음부터</button>
+        <button data-act="cont" id="contBtn">2. 이어하기</button>
+        <button data-act="end">3. 엔딩 목록</button>
+        <button data-act="stl">4. 스틸 미리보기 <span style="opacity:.6">(제작용)</span></button>
+        <button data-act="chsel">5. 장 선택 <span style="opacity:.6">(제작용)</span></button>
+      </div>
+      <div class="foot">v0.8 · 전체 11장 · 엔딩 3종</div>
+    </div>
+  </div>
+
+  <div id="game" class="view">
+    <div class="bar"><span>SEOHYANG.EXE</span><span id="chlabel"></span></div>
+    <div id="win"><img id="cg" alt=""><div id="tbox"><div id="txt"></div><div id="choices"></div></div>
+      <div id="split">
+        <div class="half" id="hl">
+          <img class="bg sun" id="imgSun" alt="">
+          <div class="redov"></div>
+          <div class="stag">해 질 녘</div>
+          <div class="stxt"><div id="lt"></div><div class="sch" id="lch"></div></div>
+        </div>
+        <div class="half" id="hr">
+          <img class="bg night" id="imgNight" alt="">
+          <img class="bg cx" id="imgClimax" alt="">
+          <div class="stag">자정</div>
+          <div class="stxt"><div id="rt"></div></div>
+        </div>
+        <div id="fin"><img class="bg" id="imgFin" alt=""><div class="ph" id="finph"></div><div class="redov"></div><div class="stxt"><div id="ft"></div></div></div>
+      </div>
+      <span id="more" class="blink">▼</span></div>
+    <div class="bar"><span>SPACE·클릭 다음 &nbsp; F 수치 &nbsp; R 검수 &nbsp; Q 타이틀</span><span id="rv"></span></div>
+    <div id="stillov" class="overlay"><div class="still" id="stillovSlot"></div></div>
+    <div id="card" class="overlay"><div id="cardnum"></div><div class="cardsub">· · ·</div></div>
+    <div id="flags" class="panel"></div>
+    <div id="quit" class="panel">타이틀로 돌아갈까요?<br><small>진행은 이 장의 처음으로 저장돼요.</small>
+      <div><button data-q="y">Y 예</button><button data-q="n">N 아니오</button></div></div>
+  </div>
+
+  <div id="proto" class="view list">
+    <h2 id="protoHead">— 2장 끝 —</h2>
+    <div id="protoSub"></div>
+    <div class="rows" id="protoFlags"></div>
+    <div><button data-act="new">1. 처음부터 다시</button><button data-act="title">2. 타이틀로</button></div>
+  </div>
+
+  <div id="chsel" class="view list">
+    <h2>장 선택 (제작용)</h2>
+    <div class="note" style="color:var(--dg);font-size:1.5cqw;margin-bottom:1cqw">수치는 0에서 시작하고 저장되지 않아요.</div>
+    <div class="rows" id="chRows" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.2cqw 2cqw"></div>
+    <button class="back" data-act="title">◀ 돌아가기</button>
+  </div>
+
+  <div id="endings" class="view list">
+    <h2>엔딩 목록</h2>
+    <div class="rows" id="endRows"></div>
+    <button class="back" data-act="title">◀ 돌아가기</button>
+  </div>
+
+  <div id="stills" class="view list">
+    <h2>스틸 미리보기</h2>
+    <div class="note">칸을 눌러 이미지를 고르면 레트로 픽셀 효과를 입혀 미리 보여드려요. (이 화면에서만 보이고 저장되지 않아요)</div>
+    <div class="slots">
+      <div class="slot"><div class="still" id="slotCover" data-slot="cover"></div><div>STILL 01 · 커버 — 주원</div></div>
+      <div class="slot"><div class="still" id="slotWest" data-slot="west"></div><div>STILL 02 · 서향집과 담배</div></div>
+    </div>
+    <button class="back" data-act="title">◀ 돌아가기</button>
+    <input type="file" id="file" accept="image/*" hidden>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   스틸컷: 교수님이 주신 최종 이미지는 여기 data URI로 들어갑니다.
+   ========================================================= */
+const IMG = {
+  title:'img/title.jpg',
+  sunset:'img/sunset.jpg',
+  night:'img/night.jpg',
+  climax:'img/climax.jpg',
+  ch1:'img/ch1.jpg',
+  ch2:'img/ch2.jpg',
+  ch3:'img/ch3.jpg',
+  ch4:'img/ch4.jpg',
+  ch5:'img/ch5.jpg',
+  ch6:'img/ch6.jpg',
+  ch7:'img/ch7.jpg',
+  ch8:'img/ch8.jpg',
+  ch9:'img/ch9.jpg',
+  ch10:'img/ch10.jpg',
+  end1:'img/end1.jpg',
+  end3:'img/end3.jpg',
+  end2:'img/end2.jpg'
+};
+const STILLS = { cover: IMG.title, west: IMG.end2, tryst: IMG.end3 };  /* west=엔딩2(중간 엔딩), tryst=엔딩3 */  /* west=붉은 현관(엔딩2), tryst=밀회(엔딩3) */
+
+/* =========================================================
+   대본 데이터
+   - 문자열 하나 = 원문 화면 한 장
+   - D("...") = Claude가 새로 쓴 문장 (검수 모드에서 노란색 [초안])
+   - {t, fx} = 연출 (flash, lightOn, lightOff, redder)
+   - {choice, options:[{label, add, set, then}]} = 선택지
+   - {when: s => 조건, ...} = 조건이 맞을 때만 나오는 화면
+   수치: family(가정) doubt(의심) lure(끌림) / resign(체념) / hk(손수건 위치)
+   ========================================================= */
+const D = (t, extra) => Object.assign({ t, draft:true }, extra || {});
+const HK = v => s => s.flags.hk === v;
+
+const CHAPTERS = [
+ /* ---------------- 1 형사 ---------------- */
+ { n:1, pov:'det', items:[
+  "서류를 작성하던 손에서 익숙하지 않은 냄새가 났다. 냄새를 좇아 기억을 더듬었다. 그 집, 아니 그녀의 냄새였다.",
+  "현장에서 엽총을 살피다 손에 화약이 묻었고, 닦을 휴지를 찾는 내게 그녀가 손수건을 내밀었다. 연락을 받고 서울에서 내려온 그녀는 그때 현관 옆에 비켜서 있었다.",
+  "일어나 외투 주머니를 확인했다. 그제야 그 손수건을 돌려주지 않고 외투 주머니에 넣어 왔다는 사실을 깨달았다. 손수건을 꺼내 책상 서랍에 넣었다.",
+  { choice:"손끝에 아직 냄새가 남아 있다.", options:[
+    { label:"손끝을 코에 가져간다", add:{lure:1}, then:[
+      D("손끝을 코에 가져갔다. 화약 냄새 아래로 다른 냄새가 깔려 있었다. 나쁜 짓을 하다 들킨 사람처럼 주위를 둘러보았다. 아무도 보고 있지 않았다. 그게 더 나빴다."),
+      D("뒤늦게 책상 위의 손 소독제를 짜서 손에 문질렀다.")
+    ]},
+    { label:"손 소독제를 짠다", add:{family:1}, then:[
+      "손끝을 코에 가져가려다 나쁜 짓을 하려다 들킨 것 처럼 손을 내렸다. 대신 책상 위의 손 소독제를 짜서 손에 문질렀다."
+    ]}
+  ]},
+  "우리나라에서도 총기 사고는 생각보다 많이 일어난다. 하지만 사망 사고는 드물다. 결혼을 앞둔 30대 남자가 자신의 별장에서 수렵용 엽총에 맞아 숨졌다.",
+  "남자의 주머니에서 결혼반지가 발견되었다. 어쩌면 프러포즈를 앞두고 사망했을지도 몰랐다.",
+  "엽총은 사망자 명의로 등록된 두 정 중 하나였다. 사냥 시즌 두 달 동안만 별장에 두는 총이었다. 걸이는 벽난로 위, 내 팔로도 닿지 않는 높이에 있었다.",
+  "처음엔 그의 약혼녀를 유력한 용의자로 의심했다. 정주원.",
+  "그러나 약혼녀는 미망인이 아니다. 남자가 죽어도 그녀에게 돌아갈 재산은 없었다. 게다가 그녀에게는 사건 당시 서울에 있었다는 강력한 알리바이가 있었다.",
+  "정주원의 주변 인물들을 조사해 봐야겠다고 생각했다. 책상에서 일어섰다. 책상 밑의 구두 대신 운동화를 신었다."
+ ]},
+ /* ---------------- 2 남자 ---------------- */
+ { n:2, pov:'man', items:[
+  "삼 년을 사귀었지만 주원이의 마음을 알기 어렵다. 이걸 슬픔이라고 해야 할지 절망이라고 해야 할지, 이름 붙이기 어려웠다. 이럴 때면 나는 무력감을 느낀다.",
+  "그녀는 아름다운 난수와 같다. 예측할 수 없어서 아름답고, 예측할 수 없어서 아프다.",
+  "그 난수는 수시로 바뀐다. 지금 나온 난수는 음의 수다. 그녀는 몹시 침울하다. 무슨 일이 있었던 게 틀림없다.",
+  "그녀의 전화가 울렸다. 내 시선이 전화에 닿기도 전에 그녀는 전화를 뒤집어 놓았다. 벨 소리는 멎었지만 책상 위의 진동은 멈추지 않았다.",
+  "그녀 주위에는 늘 남자가 많다. 직업 때문에 어쩔 수 없다고 하지만 나는 신경이 쓰인다.",
+  "주원이는 내가 자기 전화기를 보는 것을, 멀리서 흘끗 보는 것조차 용납하지 않는다. 그녀가 다른 남자들과 어울리는 것이 어쩔 수 없다는 건 나도 안다.",
+  "처음에는 그냥 그렇게 넘겼다. 그녀가 나와 함께한다는 것만으로도 행복했으니까. 그러나, 점점 주원의 행동을 참을 수 없었다.",
+  "처음은 작년 봄이었다. 회식에서 돌아온 그녀의 전화에 모르는 이름이 떴다. 누구냐고 물었고, 그녀는 대답 대신 전화를 뒤집었다.",
+  { t:"생각보다 소리가 먼저 났다. 내 손바닥이 그녀의 뺨에 닿는 소리였다.", fx:'flash' },
+  "그녀는 뺨을 감싸고 나를 보았다. 놀란 얼굴이 아니었다. 무언가를 확인한 얼굴이었다.",
+  "두 번째는 여름, 내가 던진 휴대전화에 눈썹 위가 찢어진 날, 그녀는 분장실 사람들에게 찬장 문에 부딪혔다고 했다.",
+  "세 번째부터는 세지 않았다. 그녀는 거짓말이 늘었고 나는 사과가 늘었다.",
+  "그녀는 점점 소리를 내지 않았다. 맞는 동안에도 나를 보고만 있었다.",
+  "그런 일이 있을 때마다 나는 주원에게 구하기 힘든 명품을 선물하고는 했다. 나에게 돈으로 해결할 수 있는 일이라면 어려운 것이 아니다.",
+  "다만, 그것이 해결이었는지에 대한 확신은 없었다."
+ ]},
+ /* ---------------- 3 형사 ---------------- */
+ { n:3, pov:'det', items:[
+  "사망자가 총을 맞은 각도는 가슴에서 아래쪽을 향해 있었다. 어깨에 견착하고 쐈다면 사수의 키는 적어도 175 이상, 허리에서 쐈다면 190에서 200 정도라고 했다.",
+  "정주원은 160 정도다. 불가능한 각도다.",
+  "주원의 주위에는 남자가 많았다. 약혼자 말고도 사귀는 사람이 있다는 소문이 있었다. 테니스 선수 출신인 그녀의 피티 강사였다.",
+  "사진 속 그 남자는 키가 크고 다부진 체격이었다. 사진을 보고 대충 보아도 180 이상의 키였다. 감정적 충동 살인이라면 질투에 눈이 먼 주원의 남자친구가 범인일 수도 있다.",
+  "그녀의 알리바이는 톨게이트 CCTV 사진으로도 확인되었다. 사건 시각, 그녀는 자기 승용차를 몰고 서울요금소를 지나 서울 방향으로 가고 있었다.",
+  "그런데도 그녀에 대한 찝찝한 감정을 지울 수 없었다. 어쩌면 그녀를 한 번 더 보고 싶은 것인지도 모른다는, 기분 나쁜 느낌이 들었다.",
+  "그만큼 그녀에게는 묘한 끈적거림이 있었다. 잘 떨어지지 않는."
+ ]},
+ /* ---------------- 4 남자 ---------------- */
+ { n:4, pov:'man', items:[
+  "주원이와 바닷가에라도 다녀와야겠다고 생각했다. 주원이는 화려한 외모와 달리 사람이 붐비는 곳을 좋아하지 않는다. 힘든 일이 있을 때면 아무도 없는 시골 바닷가를 찾는다.",
+  "파도 소리 말고는 아무것도 들리지 않는 곳. 거기서라면 그녀는 다시 웃을지도 모른다.",
+  "어쩌면 프러포즈를 서둘러야 할지도 모른다. 그녀를 붙잡아 두려는 조급함인지 사랑인지, 나도 잘 모르겠다.",
+  "의사는 내게 편집증이 있다고 한다. 책상에는 먹지 않는 약들이 쌓여 가고 있다. 정말 내 문제일까. 나를 병원에 억지로 데려간 것도 주원이었다.",
+  "몇 주 전, 주원이는 전화를 받지 않았고, 나중에 그녀가 클럽에 있었다는 사실을 알았다. 나는 그 손목을 잡았다. 처음은 아니었다.",
+  "주원이도 그날은 참지 않았다. 언성이 높아졌다. 그날은 손이 손목에서 멈추지 않았다.",
+  { t:"정신을 차렸을 때 내 두 손은 그녀의 목에 있었다. 손을 뗐을 때 그녀는 이미 의식이 없었다. 잠시 뒤 깨어났다.", fx:'flash' },
+  "이튿날 그녀의 목에 자국이 올라왔다. 붉은 줄이 다섯 개였다. 내 손가락 수와 같았다.",
+  "그녀는 거울 앞에 한참 서 있다가 옷장에서 폴로티를 꺼냈다. 한여름이었다. 방송에서 그녀는 깃을 끝까지 채운 채 웃었다.",
+  "주원이는 병원 예약 문자를 내 전화로 보냈다. 가지 않으면 끝이라고 했다. 나는 마지못해 갔다.",
+  { choice:"의사는 내게 편집증이 있다고 했다.", options:[
+    { label:"의사의 말을 믿어 본다", add:{resign:1}, then:[
+      D("어쩌면 의사의 말이 맞을지도 모른다. 내 머릿속의 일과 바깥의 일 사이에 내가 모르는 틈이 있을지도 모른다. 그 생각을 하면 숨이 조금 쉬어졌다.")
+    ]},
+    { label:"내 문제가 아니다", then:[
+      D("내 문제가 아니다. 전화를 뒤집는 사람은 내가 아니다. 클럽에 있던 사람도 내가 아니다.")
+    ]}
+  ]},
+  "그러나, 이젠 더 이상 견딜 수 없다. 다른 남자의 여자가 될 것 같은 여자를 사랑하는 것을. 그만두어야 한다."
+ ]},
+ /* ---------------- 5 형사 ---------------- */
+ { n:5, pov:'det', items:[
+  "서랍을 열 때마다 손수건이 먼저 눈에 들어왔다. 접힌 모서리에 작게 수가 놓여 있었다. 이니셜인지 무늬인지 알 수 없었다.",
+  "돌려주어야 할 물건이었다. 증거품 목록에는 오르지 않은 물건이었다. 나는 서랍을 닫았다.",
+  "피티 강사는 체육관 유리벽 너머에서 한 여자의 허리를 받치고 있었다. 나는 한동안 밖에서 그 모습을 보았다.",
+  "그의 손은 크고 정확했고, 여자는 그 손에 몸을 맡기고 있었다. 주원도 저렇게 그의 손 위에 누웠을 것이다. 그 생각이 먼저 들었다.",
+  "그는 그날 서울에 있었다고 했다. 오후에는 회원 수업이 있었고 저녁에는 집에 있었다고. 말에 막힘이 없었다.",
+  "그러는 동안 그는 손목의 밴드를 계속 만지작거렸다. 거짓말하는 사람의 버릇인지 운동하는 사람의 버릇인지 나는 구별하지 못했다.",
+  "의외였던 건 그가 주원과의 관계를 부정하지 않았다는 것이다. 그는 그녀를 사랑한다고 했다. 죽은 약혼자에 대해서는 불쌍한 사람이었다고만 했다.",
+  "사망자의 휴대전화에는 그날 저녁 주원에게 건 전화가 서른 통 가까이 남아 있었다. 한 통도 연결되지 않았다.",
+  "서른 번의 신호음이 어딘가에서 울렸을 것이다. 그녀가 서울에 있었다면 서울 어딘가에서.",
+  "나는 그 숫자를 집착이라고 불러야 할지 걱정이라고 불러야 할지 정하지 못했다. 정하지 못한 채로, 내가 그녀 쪽으로 한 걸음 더 가 있다는 것만 알았다.",
+  "순간 전화에 메세지음이 들렸다. 나는 잘못을 하다 들킨 아이처럼 황급히 전화를 들었다. 중학생 딸의 '아빠 오늘 언제 오냐'는 메세지였다.",
+  { choice:"딸의 메시지가 화면에 떠 있다.", options:[
+    { label:"이모티콘을 붙여 답장한다", add:{family:1}, then:[
+      "잘 쓰지 않던 이모티콘을 써서 답장했다."
+    ]},
+    { label:"통화 기록부터 다시 본다", add:{doubt:1}, then:[
+      D("답장은 나중으로 미뤘다. 서른 통의 발신 시각을 하나씩 수첩에 옮겨 적었다. 간격이 점점 짧아지다가, 어느 순간 끊겨 있었다.")
+    ]},
+    { label:"답장하려다 서랍을 연다", add:{lure:1}, then:[
+      D("답장을 쓰다 말고 서랍을 열었다. 손수건은 접힌 그대로였다. 나는 '곧 간다'고만 보냈다.")
+    ]}
+  ]}
+ ]},
+ /* ---------------- 6 남자 ---------------- */
+ { n:6, pov:'man', items:[
+  "반지는 서랍 안쪽, 양말 뒤에 있었다. 석 달 전에 산 것이었다. 상자를 열면 불빛이 한 점 맺혔다가 사라진다.",
+  "바닷가에서 이걸 내밀면 주원이는 웃을 것이다. 아니면 웃는 척을 할 것이다. 나는 그 둘을 구별할 자신이 없었다.",
+  "결혼하면 내 것은 모두 그녀의 것이 된다. 그녀가 원하는 것이 나인지, 결혼한 뒤의 나의 재산인지. 그런 생각을 하는 내가 싫었다.",
+  "저녁에 주원이가 왔다. 어제와 달랐다. 난수는 다시 양의 수로 돌아와 있었다.",
+  "그녀는 내 이마에 손을 얹어 보고, 밥을 차리고, 내가 좋아하는 이야기만 골라서 했다. 다정했다. 너무 다정해서 나는 그 다정함이 어디서 왔는지부터 생각했다.",
+  "사람은 떠날 준비를 끝냈을 때 가장 다정해진다고, 어디서 들은 말인지 내가 지어낸 말인지 모르겠다.",
+  "바닷가에 가자고 했다. 그녀는 창밖을 한참 보다가 이번 주는 안 된다고 했다. 정리할 일이 있다고.",
+  "무엇을 정리하는지는 묻지 않았다. 묻는 순간 나는 그녀가 용납하지 않는 사람이 된다.",
+  "그녀가 머리를 쓸어 넘길 때 냄새가 났다. 담배였다. 주원이는 담배를 피우지 않는다.",
+  "나는 그 냄새로 한 남자를 만들었다. 키가 크고 손이 크다. 웃을 때 입을 크게 벌리고 웃는 호탕한 남자.",
+  "그는 그녀를 사람 없는 바닷가에 데려간다. 그녀가 왜 전화기를 뒤집어 놓는지도 그는 안다.",
+  "한 번도 본 적 없는 남자가 이상하게 선명했다. 선명해질수록 그가 내 머릿속에만 사는 사람일지도 모른다는 생각이 들었다. 그 생각이 더 무서웠다.",
+  "책상에서 약병을 꺼냈다.",
+  { choice:"손 안에서 약병이 달그락거린다.", options:[
+    { label:"약을 먹는다", add:{resign:1}, then:[
+      D("뚜껑을 열고 한 알을 삼켰다. 물 없이 삼킨 약이 목에 걸렸다. 머릿속의 남자가 조금 흐려졌다. 흐려졌을 뿐, 사라지지는 않았다.")
+    ]},
+    { label:"서랍에 다시 넣는다", then:[
+      "잠시 고민하다 다시 서랍 속에 밀어 넣었다."
+    ]}
+  ]}
+ ]},
+ /* ---------------- 7 형사 ---------------- */
+ { n:7, pov:'det', items:[
+  "몇 달째 깜빡이던 형광등을 갈았다. 식탁 의자를 끌어다 놓고 올라섰다. 천장이 가까워지자 방이 달라 보였다.",
+  "식탁도, 소파도, 현관도, 늘 보던 것들이 모두 한 뼘씩 낮아져 있었다. 나는 의자 위에서 한참 내려오지 못했다.",
+  "별장 벽난로 위의 총걸이가 떠올랐다. 내 팔로도 닿지 않던 높이. 그리고 식탁에서 조금 비켜나 있던 의자 하나.",
+  "현장 사진을 넘기면서 나는 그 의자를 몇 번이나 지나쳤다. 의자 높이를 더하면 키 160의 여자는 190이 넘는 남자가 된다.",
+  "톨게이트 사진을 다시 꺼냈다. 핸들 위의 손을 한참 보았다. 손수건을 내밀던 손을 떠올렸다. 길고 마른 손가락, 비어 있던 약지.",
+  "사진 속 약지에는 반지가 있었다. 아니, 있는 것처럼 보였다. 해상도가 낮은 사진에서는 빛 한 점이 반지가 되기도 한다.",
+  "그녀가 알리바이를 만들기 위해 친구에게 사주했을 수도 있다. 아니면 우연히 그날 그녀와 비슷한 체형의 친구가 차를 빌렸을 수도 있다.",
+  "나는 보고 싶은 것을 보고 있는지도 몰랐다. 그녀를 범인으로 만들고 싶은 건지, 그녀를 다시 볼 핑계를 만들고 싶은 건지.",
+  "부부싸움을 할 때면 아내는 내가 자기를 피의자처럼 본다고 했다. 그때는 그저 말도 안 되는 소리라고 생각했다.",
+  "아침 일찍 관리인에게서 전화가 왔다. 현장 봉인이 풀리자 그녀가 별장에 와 있다고 했다. 짐을 정리하러 왔다는데 벌써 이틀째라고.",
+  "나는 전화를 끊고 한동안 아무것도 하지 않았다. 오전 내내 손수건이 있는 서랍을 몇 번 열었다 닫았다.",
+  { choice:"마지막으로 서랍을 연다.", options:[
+    { label:"손수건을 외투 주머니에 넣는다", add:{lure:1}, set:{hk:'coat'}, then:[
+      "마지막으로 열었을 때 손수건을 꺼내 외투 주머니에 넣었다. 돌려주기 위해서."
+    ]},
+    { label:"손수건을 증거품 봉투에 담는다", add:{doubt:1}, set:{hk:'bag'}, then:[
+      D("마지막으로 열었을 때 손수건을 꺼내 증거품 봉투에 담았다. 모서리의 자수를 감식에 맡겨 볼 생각이었다. 돌려주기 위해서가 아니었다.")
+    ]},
+    { label:"서랍을 잠근다", add:{family:1}, set:{hk:'drawer'}, then:[
+      D("마지막으로 열었을 때도 손수건은 그 자리에 있었다. 나는 서랍을 닫고 열쇠를 돌렸다.")
+    ]}
+  ]}
+ ]},
+ /* ---------------- 8 남자 ---------------- */
+ { n:8, pov:'man', items:[
+  "아침부터 주원이는 전화를 받지 않았다. 꺼진 것은 아니었다. 신호는 갔다. 어딘가에서, 뒤집힌 채로 울리고 있을 것이다.",
+  "나는 그 전화가 놓인 탁자를 상상했다. 탁자 옆의 손, 그 손 옆의 다른 손.",
+  "열 번째쯤에서 세는 것을 그만두었다. 스무 번째쯤에서 다시 세기 시작했다.",
+  { choice:"스물한 번째 신호음이 끊겼다.", options:[
+    { label:"다시 건다", then:[
+      "정리할 일이 있다고 했다. 무엇을. 누구를.",
+      "주원이는 힘든 일이 있으면 아무도 없는 바닷가로 간다. 나는 그런 곳을 한 군데밖에 알지 못했다.",
+      "동쪽으로 차를 몰았다. 터널 안에서는 신호가 끊겼고, 터널을 빠져나오면 다시 신호가 갔다. 받지 않는 전화도 신호음은 똑같았다."
+    ]},
+    { label:"'이제 그만하자'고 문자를 보낸다", add:{resign:1}, then:[
+      D("전화를 끊고 문자를 썼다. 이제 그만하자. 보내고 나서 한참을 화면만 보았다. 답은 오지 않았다."),
+      "정리할 일이 있다고 했다. 무엇을. 누구를.",
+      D("끝내더라도 확인은 해야 했다. 그녀가 거기 있는지, 누구와 있는지. 그래야 끝낼 수 있을 것 같았다."),
+      "주원이는 힘든 일이 있으면 아무도 없는 바닷가로 간다. 나는 그런 곳을 한 군데밖에 알지 못했다.",
+      D("동쪽으로 차를 몰았다. 터널 안에서는 신호가 끊겼고, 터널을 빠져나오면 다시 신호가 갔다. 이번에는 아무에게도 걸지 않았다.")
+    ]}
+  ]},
+  "나는 무엇을 확인하러 가는 걸까. 그녀가 거기 없기를 바라는지, 있기를 바라는지.",
+  "없다면 나는 병든 사람이고, 있다면 나는 버려진 사람이다."
+ ]},
+ /* ---------------- 9 형사 ---------------- */
+ { n:9, pov:'det', items:[
+  { when:HK('coat'),   t:"외투 속으로 돌아온 손수건을 만지작거렸다. 용의자 그녀에게 돌려주어야 한다. 그녀를 한 번 더 만나 봐야겠다." },
+  { when:HK('bag'),    t:"조수석에 증거품 봉투를 올려놓았다. 봉투 너머로 자수가 비쳤다. 그녀를 한 번 더 만나 봐야겠다.", draft:true },
+  { when:HK('drawer'), t:"빈 외투 주머니에 손을 넣었다. 손수건은 서랍에 두고 왔다. 그래도 그녀를 한 번 더 만나 봐야겠다.", draft:true },
+  "속초까지 세 시간. 빨리 가면 저녁이 되기 전에 도착할 수 있다. 나는 차에 시동을 걸었다.",
+  "그녀의 설명을 들어야겠다. 의자 위에 올라섰는지, 올라서서 엽총을 쐈을 때 총구의 높이는 어디쯤이었는지. CCTV 속에서 운전하던 여자가 그녀가 맞는지. 직접 들어야겠다.",
+  "남은 한 정을 회수했던가. 기억나지 않았다.",
+  { choice:"고속도로 진입로가 보인다.", options:[
+    { label:"서에 전화해 남은 한 정을 확인한다", add:{doubt:1}, then:[
+      D("갓길에 차를 세우고 서에 전화를 걸었다. 남은 한 정은 회수되지 않았다. 벽난로 위, 걸이 하나가 아직 차 있었다.")
+    ]},
+    { label:"딸에게 늦는다고 문자를 보낸다", add:{family:1}, then:[
+      D("출발하기 전에 딸에게 문자를 보냈다. 오늘 좀 늦어. 이번에는 이모티콘을 붙이지 못했다.")
+    ]},
+    { label:"그냥 출발한다", add:{lure:1}, then:[
+      D("기억나지 않는 것을 기억해 내려 애쓰지 않았다. 액셀을 밟았다.")
+    ]}
+  ]},
+  "해 질 녘에야 도착했다. 붉은 해가 산등성이를 넘고 있었다. 별장 앞에 차를 세우고 현관문을 향했다. 그녀가 있는 곳으로."
+ ]},
+ /* ---------------- 10 남자 ---------------- */
+ { n:10, pov:'man', items:[
+  "자정이 다 되어서야 도착했다. 별장 앞까지 올라가지 않고 길가 차를 세웠다. 별장 앞에 낯선 차가 한 대 서 있었다. 결국 주원이에게는 다른 남자가 있었다.",
+  "자정이 가까워 현관문이 열리고 한 남자가 나왔다. 현관 불빛을 등지고 있어서 얼굴은 보이지 않았다. 키가 크고 다부져 보였다.",
+  "그는 차 옆에 서서 담배를 한 대 피웠다. 바람을 타고 냄새가 여기까지 오는 것 같았다. 그녀의 머리칼에서 맡았던 냄새였다.",
+  "내가 지어낸 남자가 거기 서 있었다. 아니, 내가 지어냈다고 믿었던 남자가.",
+  "시동을 걸고 떠나려다 차 안에 그대로 있었다.",
+  { choice:"담배 연기가 현관 불빛 속으로 흩어진다.", options:[
+    { label:"그 남자가 떠나기를 기다린다", then:[
+      "그 남자가 먼저 떠나기를 기다렸다. 주원이에게 미련 따윈 없다. 깨문 입술에 피가 흘렀다."
+    ]},
+    { label:"반지 상자를 꺼낸다", add:{resign:1}, then:[
+      D("주머니에서 반지 상자를 꺼냈다. 열자 불빛이 한 점 맺혔다가 사라졌다."),
+      D("받을 사람이 없는 물건이었다. 아니, 돌려주어야 할 물건이었다. 그 남자의 차가 떠날 때까지 나는 상자를 닫지 못했다.")
+    ]}
+  ]},
+  "거실의 불이 꺼졌다. 남자의 차가 완전히 사라진 뒤 나는 차에서 내려 현관으로 향했다. 그녀가 안에 있을 그곳으로."
+ ]},
+ /* ---------------- 11 교차 (분할 화면) ---------------- */
+ { n:11, pov:'both', split:true, items: s => {
+  const A = s.flags.resign >= 3, h = s.flags.hk || 'coat';
+  return [
+   h === 'coat' ? { side:'L', t:"형사는 주머니 속의 손수건을 꺼내 든다. 사건 현장의 현관문을 두드린다." }
+   : h === 'bag' ? D("형사는 증거품 봉투에 든 손수건을 꺼내 든다. 사건 현장의 현관문을 두드린다.", { side:'L' })
+   : D("형사는 빈 외투 주머니에 손을 넣었다 뺀다. 사건 현장의 현관문을 두드린다.", { side:'L' }),
+   { side:'R', t:"남자는 주머니 속의 반지를 만지작거리며 별장으로 발걸음을 옮긴다. 현관에 다가가자 센서등이 켜진다.", fx:'lightOn' },
+   { side:'R', t:"아무런 기척이 없자 남자는 열쇠로 문을 열고 들어선다." },
+   { side:'L', t:"여자는 타월 한 장만으로 몸을 가린 채 거실로 나온다. 형사는 급히 고개를 돌린다." },
+   ...(A ? [
+     /* 남자 A: 놓아주려는 남자, 놓지 않는 여자 */
+     { side:'R', t:"칠흑같이 어두운 실내에 현관 센서등만이 거실을 비춘다." },
+     D("남자는 주머니에서 반지 상자를 꺼내 연다. 이걸 주려고 했어. 이제 그만하자. 목소리가 생각보다 담담하다.", { side:'R' }),
+     D("여자는 상자를 받지 않는다. 남자는 상자를 닫아 다시 주머니에 넣는다. 여자가 웃는다. 넌 내 거야. 아무 데도 못 가.", { side:'R' }),
+     { side:'L', t:"당황한 형사는 현관을 나와 해가 지는 하늘을 보며 담배를 빼어 문다. 형사의 담배가 다 타들어 갈 때쯤 하늘은 불타는 듯 붉어진다.", fx:'redder' },
+     { side:'R', t:"여자는 의자에 올라가 벽에 걸린 사냥총을 꺼내 든다.", fx:'climax' },
+     D("여자는 총구를 자기 목에 댄다. 남자가 말한다. 그 총엔 실탄이 없어.", { side:'R' }),
+     D("여자는 한 손으로 장식장 서랍을 열어 상자 하나를 바닥에 던진다. 뚜껑이 열린 탄약 상자는 비어 있다.", { side:'R' }),
+     D("남자가 여자를 부르며 달려드는 순간 센서등이 꺼진다.", { side:'R', fx:'lightOff' }),
+     D("어둠 속에서 두 사람의 손이 총신 위에서 엉킨다. 의자 다리가 바닥을 긁는다.", { side:'R' })
+   ] : [
+     { side:'L', t:"당황한 형사는 현관을 나와 해가 지는 하늘을 보며 담배를 빼어 문다. 형사의 담배가 다 타들어 갈 때쯤 하늘은 불타는 듯 붉어진다.", fx:'redder' },
+     { side:'R', t:"칠흑같이 어두운 실내에 현관 센서등만이 거실을 비춘다. 남자의 눈에서 불타는 분노가 번쩍인다." },
+     { side:'R', t:"남자는 끓어오는 분노를 참을 수 없었다. 괴성을 지르며 주원에게 달려들었다." },
+     { side:'R', t:"여자는 의자에 올라가 벽에 걸린 사냥총을 꺼내 든다. 여자의 몸에서 타월이 흘러내린다.", fx:'climax' },
+     { side:'R', t:"남자가 소리를 지르며 한 발자국 다가가는 순간 센서등이 꺼진다.", fx:'lightOff' }
+   ]),
+   { side:'R', t:"어둠 속에서 총소리가 울린다.", fx:'flash' },
+   { side:'L', t:"형사는 무슨 소리를 들은 것처럼 현관문으로 고개를 돌린다." },
+   { side:'L', choice:"현관문 너머가 조용하다.", options:[
+     { label:"수갑을 꺼낸다", add:{doubt:2} },
+     { label: s => s.flags.hk === 'drawer' ? "그녀에게 다가간다" : "손수건을 내민다", add:{lure:2} },
+     { label:"차로 돌아간다", add:{family:2} }
+   ]},
+   { build:'ending' }
+  ];
+ }}
+];
+
+/* =========================================================
+   엔딩
+   형사: 끌림 4 이상 → 3 / 아니면 의심 3 이상 → 1 / 나머지 → 2
+   남자: 체념 3 이상 → A(놓아주다) / 아니면 B(붙잡다)
+   ========================================================= */
+CHAPTERS.forEach(c => { if (c.n <= 10) c.cg = 'ch' + c.n; });
+const ET = { 1:'돌아오는 길', 2:'서향집 · 중간 엔딩', 3:'손수건' };
+const MT = { a:'놓아주다', b:'붙잡다' };
+const EPI = {
+ 1: (A) => [
+  D("수갑을 채운 건 그날 밤이었다. 그녀는 저항하지 않았다. 손목에 쇠가 닿았을 때 그녀는 놀란 얼굴이 아니었다. 무언가를 확인한 얼굴이었다."),
+  ...(A ? [
+   D("그녀는 아무것도 설명하지 않았다. 목의 자국도, 병원 기록도 꺼내지 않았다."),
+   D("톨게이트를 지난 건 그녀의 친구였다. 그날 그녀가 별장에 있었다는 걸 아무도 몰라야 했다고, 그녀는 그것만 말했다."),
+   D("다만 나는 끝내 알지 못했다. 그날 밤 그 남자가 무엇을 말하러 왔는지.")
+  ] : [
+   D("취조실에서 그녀는 의자 이야기를 순순히 했다. 톨게이트를 지난 건 그녀의 친구였다."),
+   D("그녀는 깃을 내려 목을 보여 주었다. 자국은 이미 없었다. 병원 기록이 대신 남아 있었다. 변호사는 정당방위를 말할 것이다."),
+   D("나는 그 판단이 내 몫이 아니라는 데 안도했다.")
+  ]),
+  D("퇴근길에 백화점에 들렀다. 중학생 딸이 무엇을 좋아하는지 점원에게 물어야 했다."),
+  D("점원이 먼저 권한 것은 수가 놓인 손수건 세트였다. 나는 다른 것을 골랐다."),
+  D("현관을 열자 새로 간 형광등이 환했다. 딸이 아빠 오늘은 왜 이렇게 일찍 왔냐고 물었다.")
+ ],
+ 2: () => [],
+ 3: (A, f) => [
+  D("나는 끝내 수갑을 꺼내지 못했다."),
+  ...(f.hk !== 'drawer' ? [D("손수건을 돌려주었다. 그녀는 받지 않고 내 손에 그대로 쥐여 주었다.")] : []),
+  D("보고서에는 사고사라고 적었다. 의자는 식탁 옆으로 돌아가 있었다. 톨게이트 사진 속 약지의 빛은 해상도의 문제였다."),
+  D("그 뒤로 나는 주말마다 동쪽으로 차를 몰았다. 딸의 메시지에 답하는 일이 줄었다. 아내는 더 이상 내가 자기를 피의자처럼 본다고 말하지 않았다. 아무것도 묻지 않았다."),
+  ...(A ? [
+   D("어느 밤 그녀의 전화가 울렸다. 내 시선이 닿기도 전에 그녀는 전화를 뒤집어 놓았다."),
+   D("벽난로 위에는 총 한 정이 아직 걸려 있었다.")
+  ] : [
+   D("그녀는 가끔 전화를 뒤집어 놓았다. 나는 묻지 않았다. 묻는 순간 나는 그녀가 용납하지 않는 사람이 된다.")
+  ])
+ ]
+};
+const POV_COLOR = { det:'#55ffff', man:'#e09a3a', both:'#ff5555' };
+const HK_NAME = { coat:'외투 주머니', bag:'증거품 봉투', drawer:'서랍' };
+
+/* ---------- 유틸 ---------- */
+const $ = s => document.querySelector(s);
+const store = {
+  get(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+let view = 'boot';
+function show(v){
+  document.querySelectorAll('.view').forEach(e => e.classList.toggle('on', e.id === v));
+  view = v;
+  if (v !== 'game') { const b = document.querySelector('#'+v+' button'); if (b) b.focus(); }
+}
+
+/* ---------- 부팅 ---------- */
+const BOOT = [
+  "SEOHYANG BIOS Ver 1.0        (C) 1993",
+  "CPU : 80386DX-33",
+  "Memory Test : 4096K OK",
+  "Detecting drives ...  C:",
+  "",
+  "C:\\> CD SEOHYANG",
+  "C:\\SEOHYANG> SEOHYANG.EXE"
+];
+let bootTimer = null;
+function runBoot(){
+  show('boot'); const el = $('#boot'); el.textContent = ''; let i = 0;
+  bootTimer = setInterval(() => {
+    if (i < BOOT.length) { el.textContent += BOOT[i++] + "\n"; }
+    else { clearInterval(bootTimer); bootTimer = null; setTimeout(() => { if (view==='boot') show('warn'); }, 500); }
+  }, 260);
+}
+function skipBoot(){ if (bootTimer){ clearInterval(bootTimer); bootTimer=null; } show('warn'); }
+
+/* ---------- 스틸 ---------- */
+function stillHTML(slot, label){
+  if (STILLS[slot]) return `<img src="${STILLS[slot]}" alt="">`;
+  return `<div class="ph"><b>${label}</b>이미지 자리</div>`;
+}
+function renderStills(){
+  $('#titleImg').src = STILLS.cover || '';
+  $('#slotCover').innerHTML = stillHTML('cover','STILL 01 · 주원');
+  $('#slotWest').innerHTML  = stillHTML('west','STILL 02 · 서향집');
+}
+function pixelate(img, w=320){
+  const h = Math.round(img.height * w / img.width);
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const x = c.getContext('2d'); x.drawImage(img, 0, 0, w, h);
+  const d = x.getImageData(0, 0, w, h), p = d.data;
+  const B = [0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5], lv = 7, step = 255/lv;
+  for (let yy=0; yy<h; yy++) for (let xx=0; xx<w; xx++){
+    const i = (yy*w+xx)*4, t = (B[(yy&3)*4+(xx&3)]/16 - .5) * step;
+    for (let k=0; k<3; k++){ const v = Math.max(0, Math.min(255, p[i+k] + t)); p[i+k] = Math.round(v/step)*step; }
+  }
+  x.putImageData(d, 0, 0); return c.toDataURL();
+}
+let pendingSlot = null;
+document.querySelectorAll('#stills .still').forEach(s => s.addEventListener('click', () => { pendingSlot = s.dataset.slot; $('#file').click(); }));
+$('#file').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => { const im = new Image(); im.onload = () => { STILLS[pendingSlot] = pixelate(im); renderStills(); }; im.src = r.result; };
+  r.readAsDataURL(f); e.target.value = '';
+});
+
+/* ---------- 게임 상태 ---------- */
+const S = { ch:0, queue:[], flags:{}, mode:'text', typing:false, review:false, after:null, target:null, preview:false, choiceBox:null };
+const fresh = () => ({ family:0, doubt:0, lure:0, resign:0, hk:null });
+let tTimer = null, full = '', isDraft = false;
+
+function newGame(){ S.flags = fresh(); startChapter(0); }
+function contGame(){
+  const s = store.get('seohyang_save');
+  if (!s) return;
+  S.flags = Object.assign(fresh(), s.flags); startChapter(s.ch);
+}
+function resetScene(split){
+  const sp = $('#split');
+  sp.classList.toggle('on', split); sp.classList.remove('merged');
+  $('#hl').className = 'half'; $('#hr').className = 'half';
+  ['#lt','#rt','#txt'].forEach(q => $(q).textContent = '');
+  $('#lch').innerHTML = ''; $('#choices').innerHTML = '';
+  $('#fin').classList.remove('on'); $('#ft').textContent = '';
+  $('#tbox').style.display = split ? 'none' : '';
+  $('#cg').classList.remove('on');
+  $('#stillov').classList.remove('on');
+  $('#more').style.display = 'none';
+  S.target = null;
+}
+function startChapter(ch, opts){
+  const c = CHAPTERS[ch];
+  S.preview = !!(opts && opts.preview); S.ch = ch;
+  S.queue = typeof c.items === 'function' ? c.items(S) : c.items.slice();
+  if (!S.preview) store.set('seohyang_save', { ch, flags:S.flags });
+  show('game'); resetScene(!!c.split); showCg(c.cg);
+  $('#chlabel').textContent = '─ ' + c.n + ' ─';
+  $('#txt').classList.remove('det','man'); if (c.pov !== 'both') $('#txt').classList.add(c.pov);
+  const num = $('#cardnum'); num.textContent = c.n; num.style.color = POV_COLOR[c.pov];
+  num.style.animation = 'none'; void num.offsetWidth; num.style.animation = '';
+  $('#card').classList.add('on'); S.mode = 'card';
+}
+function endChapter(){
+  if (S.ch + 1 < CHAPTERS.length) startChapter(S.ch + 1, { preview:S.preview });
+  else act('title');
+}
+function next(){
+  if (!S.queue.length) return endChapter();
+  const it = S.queue.shift();
+  if (typeof it === 'string') return showText({ t:it });
+  if (it.when && !it.when(S)) return next();
+  if (it.choice) return showChoice(it);
+  if (it.still) return STILLS[it.still] ? showStill(it.still) : next();
+  if (it.build === 'ending'){ buildEnding(); return next(); }
+  if (it.unsplit){ resetScene(false); showCg(it.cg); return next(); }
+  if (it.ending) return showEnding(it.ending);
+  showText(it);
+}
+function buildEnding(){
+  const f = S.flags, A = f.resign >= 3;
+  const d = f.lure >= 4 ? 3 : f.doubt >= 3 ? 1 : 2;
+  const items = [];
+  /* 엔딩 1(가정)은 붉은 현관 없이 바로 후일담으로 */
+  /* 엔딩 2만 붉은 현관, 엔딩 3은 밀회 전용 그림, 엔딩 1은 그림 없이 바로 후일담 */
+  let epi = EPI[d](A, f);
+  if (d === 2) items.push(
+    { side:'F', img:'west', t:"형사는 주원을 만나봐야 마음을 정할 수 있을 것 같았다. 담배를 신발에 비벼끄고 현관문을 다시 두드렸다." },
+    { side:'F', img:'west', t:"서쪽을 향한 현관문이 붉게 타오르고 있다." });
+  if (d === 3){ items.push(Object.assign({}, epi[0], { side:'F', img:'tryst' })); epi = epi.slice(1); }
+  items.push({ unsplit:true, cg: d === 1 ? 'end1' : d === 3 ? 'end3' : null }, ...epi, { ending:'d' + d + (A ? 'a' : 'b') });
+  S.queue.unshift(...items);
+}
+function showEnding(id){
+  const got = store.get('seohyang_endings') || [];
+  if (!got.includes(id)) got.push(id);
+  store.set('seohyang_endings', got);
+  if (!S.preview) store.del('seohyang_save');
+  const d = id[1], m = id[2];
+  $('#protoHead').textContent = 'ENDING ' + d + ' · ' + ET[d];
+  $('#protoSub').textContent = '남자의 선택: ' + m.toUpperCase() + ' · ' + MT[m];
+  $('#protoFlags').innerHTML = flagRows(); show('proto');
+}
+function showCg(key){
+  const cg = $('#cg');
+  if (key && IMG[key]){ cg.src = IMG[key]; cg.classList.add('on'); } else cg.classList.remove('on');
+}
+function showStill(slot){
+  $('#stillovSlot').innerHTML = stillHTML(slot, slot === 'west' ? 'STILL 02 · 서향집과 담배' : 'STILL 01 · 주원');
+  $('#more').style.display = 'none';
+  $('#stillov').classList.add('on'); S.mode = 'still';
+}
+function sceneFx(fx){
+  const hl = $('#hl'), hr = $('#hr');
+  if (fx === 'flash'){ const c = $('#crt'); c.classList.remove('flash'); void c.offsetWidth; c.classList.add('flash'); }
+  if (fx === 'lightOn') hr.classList.add('lit');
+  if (fx === 'lightOff') hr.classList.remove('lit');
+  if (fx === 'redder') hl.classList.add('red');
+  if (fx === 'climax') hr.classList.add('climax');
+}
+function setSide(side, img){
+  const hl = $('#hl'), hr = $('#hr');
+  if (side === 'F'){
+    hl.classList.remove('act'); hr.classList.remove('act');
+    const fin = $('#fin'), key = img || 'west';
+    const src = STILLS[key] || (key === 'west' ? IMG.sunset : '');
+    fin.classList.toggle('fallback', key === 'west' && !STILLS.west);
+    fin.classList.toggle('plain', key !== 'west' || !!STILLS.west);
+    fin.classList.toggle('noimg', !src);
+    $('#imgFin').src = src;
+    $('#finph').innerHTML = '<b>ENDING 3 그림 자리</b>형사와 밀회';
+    fin.classList.add('on'); return $('#ft');
+  }
+  hl.classList.toggle('act', side === 'L'); hr.classList.toggle('act', side === 'R');
+  return side === 'R' ? $('#rt') : $('#lt');
+}
+function renderTxt(str){
+  const el = S.target || $('#txt');
+  if (isDraft && S.review){ el.innerHTML = ''; const sp = document.createElement('span'); sp.className='draft'; sp.textContent = '[초안] ' + str; el.appendChild(sp); }
+  else el.textContent = str;
+}
+function showText(it, after){
+  S.mode = after ? 'choice-typing' : 'text';
+  full = it.t; isDraft = !!it.draft; S.after = after || null;
+  $('#choices').innerHTML = ''; $('#lch').innerHTML = ''; $('#more').style.display = 'none';
+  S.target = it.side ? setSide(it.side, it.img) : $('#txt');
+  S.target.classList.toggle('prompt', !!after);
+  if (it.fx) sceneFx(it.fx);
+  let i = 0; S.typing = true; renderTxt('');
+  clearInterval(tTimer);
+  tTimer = setInterval(() => { i++; renderTxt(full.slice(0, i)); if (i >= full.length) finishType(); }, 30);
+}
+function finishType(){
+  clearInterval(tTimer); S.typing = false; renderTxt(full);
+  if (S.after){ const f = S.after; S.after = null; f(); }
+  else $('#more').style.display = 'block';
+}
+function showChoice(it){
+  showText({ t:it.choice, side:it.side }, () => {
+    S.mode = 'choice';
+    const box = it.side ? $('#lch') : $('#choices');
+    S.choiceBox = box; box.innerHTML = '';
+    it.options.forEach((o, k) => {
+      const b = document.createElement('button');
+      b.textContent = (k+1) + ') ' + (typeof o.label === 'function' ? o.label(S) : o.label);
+      b.onclick = e => { e.stopPropagation(); pick(o); };
+      box.appendChild(b);
+    });
+    box.firstChild.focus();
+  });
+}
+function pick(o){
+  for (const k in (o.add||{})) S.flags[k] = (S.flags[k]||0) + o.add[k];
+  if (o.set) Object.assign(S.flags, o.set);
+  $('#choices').innerHTML = ''; $('#lch').innerHTML = ''; S.choiceBox = null;
+  S.queue.unshift(...(o.then||[]));
+  if ($('#flags').classList.contains('on')) renderFlags();
+  next();
+}
+function advance(){
+  if (S.mode === 'card'){ $('#card').classList.remove('on'); S.mode = 'text'; return next(); }
+  if (S.mode === 'still'){ $('#stillov').classList.remove('on'); S.mode = 'text'; return next(); }
+  if (S.typing) return finishType();
+  if (S.mode === 'choice') return;
+  next();
+}
+function flagRows(){
+  const f = S.flags;
+  return `<div><span>형사 · 가정</span><span>${f.family}</span></div>
+          <div><span>형사 · 의심</span><span>${f.doubt}</span></div>
+          <div><span>형사 · 끌림</span><span>${f.lure}</span></div>
+          <div><span>형사 · 손수건</span><span>${HK_NAME[f.hk] || '-'}</span></div>
+          <div><span>남자 · 체념</span><span>${f.resign}</span></div>`;
+}
+function renderFlags(){
+  const f = S.flags;
+  $('#flags').innerHTML = `<h4>[ 현재 수치 ]</h4>형사 가정 ${f.family} · 의심 ${f.doubt} · 끌림 ${f.lure}<br>손수건 ${HK_NAME[f.hk] || '-'}<br>남자 체념 ${f.resign}`;
+}
+function toggleFlags(){ renderFlags(); $('#flags').classList.toggle('on'); }
+function toggleReview(){
+  S.review = !S.review; $('#rv').textContent = S.review ? '검수모드 ON' : '';
+  if (!S.typing && S.mode === 'text' && S.target) renderTxt(full);
+}
+function openQuit(){ $('#quit').classList.add('on'); $('#quit button').focus(); }
+function closeQuit(){ $('#quit').classList.remove('on'); }
+
+function renderEndings(){
+  const got = store.get('seohyang_endings') || [];
+  const hasD = d => got.some(id => id[1] === String(d));
+  const hasM = m => got.some(id => id[2] === m);
+  const n = [1,2,3].filter(hasD).length;
+  $('#endRows').innerHTML = [1,2,3].map(d => hasD(d)
+      ? `<div><span>ENDING ${d}</span><span>${ET[d]}</span></div>`
+      : `<div class="lock"><span>ENDING ${d}</span><span>? ? ? ? ? ?</span></div>`).join('')
+    + `<div style="border:0;color:var(--dg)"><span>${n} / 3</span><span></span></div>`
+    + `<div style="border:0;margin-top:1.5cqw"><span>남자의 선택</span><span>A · ${hasM('a') ? MT.a : '? ? ?'} &nbsp; B · ${hasM('b') ? MT.b : '? ? ?'}</span></div>`;
+}
+function renderChSel(){
+  const box = $('#chRows'); box.innerHTML = '';
+  CHAPTERS.forEach((c, i) => {
+    const mk = (label, flags) => {
+      const b = document.createElement('button'); b.textContent = label;
+      b.onclick = e => { e.stopPropagation(); S.flags = Object.assign(fresh(), flags || {}); startChapter(i, { preview:true }); };
+      box.appendChild(b);
+    };
+    const who = c.pov === 'det' ? '형사' : c.pov === 'man' ? '남자' : '교차';
+    if (c.split){ mk(`${c.n}장 ${who} · 남자B`); mk(`${c.n}장 ${who} · 남자A`, { resign:3 }); }
+    else mk(`${c.n}장 ${who}`);
+  });
+}
+function refreshTitle(){
+  $('#contBtn').style.opacity = store.get('seohyang_save') ? 1 : .4;
+}
+
+/* ---------- 메뉴 동작 ---------- */
+function act(a){
+  if (a === 'new') newGame();
+  else if (a === 'cont') contGame();
+  else if (a === 'end'){ renderEndings(); show('endings'); }
+  else if (a === 'stl'){ renderStills(); show('stills'); }
+  else if (a === 'chsel'){ renderChSel(); show('chsel'); }
+  else if (a === 'title'){ clearInterval(tTimer); refreshTitle(); renderStills(); show('title'); }
+}
+document.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); act(b.dataset.act); }));
+document.querySelectorAll('[data-q]').forEach(b => b.addEventListener('click', e => {
+  e.stopPropagation(); closeQuit();
+  if (b.dataset.q === 'y') act('title');
+}));
+
+/* ---------- 입력 ---------- */
+$('#game').addEventListener('click', e => {
+  if (e.target.closest('button') || e.target.closest('.panel')) return;
+  advance();
+});
+$('#boot').addEventListener('click', skipBoot);
+$('#warn').addEventListener('click', () => act('title'));
+
+document.addEventListener('keydown', e => {
+  const k = e.key;
+  if (view === 'boot'){ skipBoot(); return; }
+  if (view === 'warn'){ act('title'); return; }
+
+  if (k === 'ArrowDown' || k === 'ArrowUp'){
+    const scope = view === 'game'
+      ? ($('#quit').classList.contains('on') ? $('#quit') : (S.choiceBox || $('#choices')))
+      : $('#'+view);
+    const bs = [...scope.querySelectorAll('button')]; if (!bs.length) return;
+    let i = bs.indexOf(document.activeElement);
+    i = k === 'ArrowDown' ? (i+1) % bs.length : (i-1+bs.length) % bs.length;
+    bs[i].focus(); e.preventDefault(); return;
+  }
+
+  if (view === 'game'){
+    if ($('#quit').classList.contains('on')){
+      if (k==='y'||k==='Y') $('#quit [data-q="y"]').click();
+      if (k==='n'||k==='N'||k==='Escape') closeQuit();
+      return;
+    }
+    if (k==='f'||k==='F') return toggleFlags();
+    if (k==='r'||k==='R') return toggleReview();
+    if (k==='q'||k==='Q'||k==='Escape') return openQuit();
+    if (S.mode === 'choice' && /^[1-4]$/.test(k)){
+      const b = S.choiceBox && S.choiceBox.children[+k-1]; if (b) b.click(); return;
+    }
+    if (k === ' '){
+      e.preventDefault();               /* 스페이스로는 선택지가 눌리지 않게 */
+      if (S.mode !== 'choice') advance();
+      return;
+    }
+    if (k === 'Enter'){
+      if (S.mode === 'choice') return;  /* 선택지는 엔터·숫자·클릭으로 */
+      e.preventDefault(); advance();
+    }
+    return;
+  }
+
+  if (/^[1-4]$/.test(k)){
+    const bs = [...document.querySelectorAll('#'+view+' button')];
+    const b = bs[+k-1]; if (b) b.click();
+  }
+  if (k === 'Escape' && view !== 'title') act('title');
+});
+
+document.addEventListener('keyup', e => { if (e.key === ' ' && view === 'game') e.preventDefault(); }, true);
+$('#imgSun').src = IMG.sunset; $('#imgNight').src = IMG.night; $('#imgClimax').src = IMG.climax;
+renderStills(); refreshTitle(); runBoot();
+</script>
+</body>
+</html>
